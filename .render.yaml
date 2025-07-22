@@ -1,0 +1,11 @@
+services:
+  - type: web
+    name: hexlet-chat
+    env: node
+    plan: free
+    buildCommand: make build
+    startCommand: make start
+    envVars:
+      - key: NODE_VERSION
+        value: 20.11.1
+    autoDeploy: true
