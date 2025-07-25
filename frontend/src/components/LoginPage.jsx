@@ -29,7 +29,7 @@ const LoginPage = () => {
     setAuthFailed(false);
     try {
       const response = await axios.post(routes.loginPath(), values);
-      localStorage.setItem('userToken', response.data.token);
+      localStorage.setItem('token', response.data.token);
       const from = location.state?.from?.pathname || '/';
       navigate(from);
     } catch (error) {
