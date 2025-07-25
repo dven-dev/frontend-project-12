@@ -1,8 +1,7 @@
 import { Navigate, Outlet, useLocation } from 'react-router-dom';
-import { useSelector } from 'react-redux';
 
 const PrivatePage = () => {
-  const token = useSelector((state) => state.auth.token);
+  const token = localStorage.getItem('token');
   const location = useLocation();
 
   if (!token) {

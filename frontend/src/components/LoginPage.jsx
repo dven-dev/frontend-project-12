@@ -11,14 +11,17 @@ import { Formik } from 'formik';
 import * as Yup from 'yup';
 import axios from 'axios';
 import { useNavigate, useLocation } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
 import routes from '../routes.js';
 import avatarImg from '../assets/avatar.jpg';
+import { loginSuccess } from '../slices/authSlice.js';
 
 const LoginPage = () => {
   const [authFailed, setAuthFailed] = useState(false);
   const inputRef = useRef(null);
   const navigate = useNavigate();
   const location = useLocation();
+  const dispatch = useDispatch();
 
   const validationSchema = Yup.object().shape({
     username: Yup.string().required('Обязательное поле'),
@@ -29,9 +32,15 @@ const LoginPage = () => {
     setAuthFailed(false);
     try {
       const response = await axios.post(routes.loginPath(), values);
-      localStorage.setItem('token', response.data.token);
+      const { token, username } = response.data;
+
+      localStorage.setItem('token', token);
+      localStorage.setItem('username', username);
+
+      dispatch(loginSuccess({ token, username }));
+
       const from = location.state?.from?.pathname || '/';
-      navigate(from);
+      navigate(from, { replace: true });
     } catch (error) {
       if (error.response?.status === 401) {
         setAuthFailed(true);
