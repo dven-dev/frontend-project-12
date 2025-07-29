@@ -9,7 +9,8 @@
     "start": "npx @hexlet/chat-server --static ./frontend/dist"
   },
   "dependencies": {
-    "@hexlet/chat-server": "^2.0.4"
+    "@hexlet/chat-server": "^2.0.4",
+    "socket.io-client": "^4.8.1"
   },
   "repository": {
     "type": "git",
