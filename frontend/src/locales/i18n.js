@@ -68,6 +68,7 @@ const resources = {
       messagesCount_many: '{{count}} сообщений',
       messageSent: 'Сообщение отправлено',
       messageSendError: 'Ошибка отправки сообщения',
+      noMessageYet: 'Напишите первым!',
       
      
       notFound: 'Страница не найдена',
