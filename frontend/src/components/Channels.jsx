@@ -1,6 +1,8 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 
 function Channels({ channels, currentChannelId, onSelectChannel }) {
+  const { t } = useTranslation();
   console.log('Channels render:', channels);
 
   return (

@@ -1,11 +1,14 @@
-// components/modals/RenameChannelModal.jsx
 import React, { useRef, useEffect } from 'react';
+import { Modal, Button, Form, FloatingLabel } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
-import { Formik, Form, Field, ErrorMessage } from 'formik';
+import { useTranslation } from 'react-i18next';
+import { toast } from 'react-toastify';
+import { Formik } from 'formik';
 import * as Yup from 'yup';
 import { renameChannel } from '../../slices/channelsSlice.js';
 
 const RenameChannelModal = ({ show, onHide, channel }) => {
+  const { t } = useTranslation();
   const dispatch = useDispatch();
   const { channels } = useSelector((state) => state.channels);
   const inputRef = useRef();
@@ -16,94 +19,99 @@ const RenameChannelModal = ({ show, onHide, channel }) => {
 
   const validationSchema = Yup.object({
     name: Yup.string()
-      .min(3, 'От 3 до 20 символов')
-      .max(20, 'От 3 до 20 символов')
-      .notOneOf(channelNames, 'Должно быть уникальным')
-      .required('Обязательное поле'),
+      .min(3, t('channelNameLength'))
+      .max(20, t('channelNameLength'))
+      .notOneOf(channelNames, t('channelMustBeUnique'))
+      .required(t('requiredField')),
   });
 
   useEffect(() => {
-    if (show) {
-      inputRef.current?.focus();
-      inputRef.current?.select();
+    if (show && channel) {
+      setTimeout(() => {
+        inputRef.current?.focus();
+        inputRef.current?.select();
+      }, 100);
     }
-  }, [show]);
+  }, [show, channel]);
 
   const handleSubmit = async (values, { setSubmitting }) => {
     try {
       await dispatch(renameChannel({
         id: channel.id,
-        name: values.name,
+        name: values.name.trim(),
       })).unwrap();
+      toast.success(t('channelRenamed'));
       onHide();
     } catch (error) {
       console.error('Ошибка переименования канала:', error);
+      toast.error(t('channelRenameError'));
     } finally {
       setSubmitting(false);
     }
   };
 
-  if (!show || !channel) return null;
+  if (!channel) return null;
 
   return (
-    <div className="modal show d-block" tabIndex="-1" role="dialog">
-      <div className="modal-dialog" role="document">
-        <div className="modal-content">
-          <div className="modal-header">
-            <h5 className="modal-title">Переименовать канал</h5>
-            <button
-              type="button"
-              className="btn-close"
-              aria-label="Закрыть"
-              onClick={onHide}
-            />
-          </div>
-          <Formik
-            initialValues={{ name: channel.name }}
-            validationSchema={validationSchema}
-            onSubmit={handleSubmit}
-          >
-            {({ isSubmitting }) => (
-              <Form>
-                <div className="modal-body">
-                  <div className="mb-3">
-                    <label htmlFor="name" className="form-label">
-                      Имя канала
-                    </label>
-                    <Field
-                      id="name"
-                      name="name"
-                      type="text"
-                      className="form-control"
-                      ref={inputRef}
-                      disabled={isSubmitting}
-                    />
-                    <ErrorMessage name="name" component="div" className="text-danger" />
-                  </div>
-                </div>
-                <div className="modal-footer">
-                  <button
-                    type="button"
-                    className="btn btn-secondary"
-                    onClick={onHide}
-                    disabled={isSubmitting}
-                  >
-                    Отменить
-                  </button>
-                  <button
-                    type="submit"
-                    className="btn btn-primary"
-                    disabled={isSubmitting}
-                  >
-                    Отправить
-                  </button>
-                </div>
-              </Form>
-            )}
-          </Formik>
-        </div>
-      </div>
-    </div>
+    <Modal show={show} onHide={onHide} centered>
+      <Modal.Header closeButton>
+        <Modal.Title>{t('renameChannel')}</Modal.Title>
+      </Modal.Header>
+      <Formik
+        initialValues={{ name: channel.name }}
+        validationSchema={validationSchema}
+        onSubmit={handleSubmit}
+      >
+        {({
+          handleSubmit,
+          handleChange,
+          values,
+          touched,
+          errors,
+          isSubmitting,
+        }) => (
+          <Form onSubmit={handleSubmit}>
+            <Modal.Body>
+              <FloatingLabel
+                controlId="name"
+                label={t('channelName')}
+                className="mb-3"
+              >
+                <Form.Control
+                  name="name"
+                  type="text"
+                  placeholder={t('channelName')}
+                  value={values.name}
+                  onChange={handleChange}
+                  isInvalid={touched.name && !!errors.name}
+                  disabled={isSubmitting}
+                  ref={inputRef}
+                />
+                <Form.Control.Feedback type="invalid">
+                  {errors.name}
+                </Form.Control.Feedback>
+              </FloatingLabel>
+            </Modal.Body>
+            <Modal.Footer>
+              <Button
+                variant="secondary"
+                onClick={onHide}
+                disabled={isSubmitting}
+              >
+                {t('cancel')}
+              </Button>
+              <Button
+                variant="primary"
+                type="submit"
+                disabled={isSubmitting || !values.name.trim()}
+              >
+                {t('rename')}
+              </Button>
+            </Modal.Footer>
+          </Form>
+        )}
+      </Formik>
+    </Modal>
   );
 };
 

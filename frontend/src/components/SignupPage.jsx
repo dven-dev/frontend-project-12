@@ -6,34 +6,47 @@ import {
   Button,
   FloatingLabel,
   Form,
+  Alert,
 } from 'react-bootstrap';
 import { Formik } from 'formik';
 import * as Yup from 'yup';
 import { useTranslation } from 'react-i18next';
 import axios from 'axios';
-import { useNavigate, useLocation } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import routes from '../routes.js';
-import avatarImg from '../assets/avatar.jpg';
+import avatarImg from '../assets/avatar_1.jpg';
 import { loginSuccess } from '../slices/authSlice.js';
 
-const LoginPage = () => {
+const SignupPage = () => {
   const { t } = useTranslation();
-  const [authFailed, setAuthFailed] = useState(false);
+  const [signupFailed, setSignupFailed] = useState(false);
+  const [errorMessage, setErrorMessage] = useState('');
   const inputRef = useRef(null);
   const navigate = useNavigate();
-  const location = useLocation();
   const dispatch = useDispatch();
 
   const validationSchema = Yup.object().shape({
-    username: Yup.string().required(t('requiredField')),
-    password: Yup.string().required(t('requiredField')),
+    username: Yup.string()
+      .min(3, t('usernameLength'))
+      .max(20, t('usernameLength'))
+      .required(t('requiredField')),
+    password: Yup.string()
+      .min(6, t('passwordLength'))
+      .required(t('requiredField')),
+    confirmPassword: Yup.string()
+      .oneOf([Yup.ref('password')], t('passwordsMustMatch'))
+      .required(t('requiredField')),
   });
 
   const handleSubmit = async (values, { setSubmitting }) => {
-    setAuthFailed(false);
+    setSignupFailed(false);
+    setErrorMessage('');
+    
     try {
-      const response = await axios.post(routes.loginPath(), values);
+     
+      const { confirmPassword, ...signupData } = values;
+      const response = await axios.post(routes.signupPath(), signupData);
       const { token, username } = response.data;
 
       localStorage.setItem('token', token);
@@ -41,14 +54,16 @@ const LoginPage = () => {
 
       dispatch(loginSuccess({ token, username }));
 
-      const from = location.state?.from?.pathname || '/';
-      navigate(from, { replace: true });
+      
+      navigate('/', { replace: true });
     } catch (error) {
-      if (error.response?.status === 401) {
-        setAuthFailed(true);
+      if (error.response?.status === 409) {
+        setSignupFailed(true);
+        setErrorMessage(t('userAlreadyExists'));
         inputRef.current?.select();
       } else {
-        throw error;
+        setSignupFailed(true);
+        setErrorMessage(t('registrationError'));
       }
     }
     setSubmitting(false);
@@ -61,13 +76,19 @@ const LoginPage = () => {
           <div className="card shadow-sm">
             <div className="card-body row p-5">
               <div className="col-md-6 d-flex align-items-center justify-content-center">
-                <img src={avatarImg} alt={t('login')} className="rounded-circle" />
+                <img src={avatarImg} alt={t('signup')} className="rounded-circle" />
               </div>
               <div className="col-md-6 mt-3 mt-md-0">
-                <h1 className="text-center mb-4">{t('login')}</h1>
+                <h1 className="text-center mb-4">{t('signup')}</h1>
+
+                {signupFailed && (
+                  <Alert variant="danger">
+                    {errorMessage}
+                  </Alert>
+                )}
 
                 <Formik
-                  initialValues={{ username: '', password: '' }}
+                  initialValues={{ username: '', password: '', confirmPassword: '' }}
                   validationSchema={validationSchema}
                   onSubmit={handleSubmit}
                 >
@@ -82,18 +103,18 @@ const LoginPage = () => {
                     <Form onSubmit={handleSubmit}>
                       <FloatingLabel
                         controlId="username"
-                        label={t('yourNickname')}
+                        label={t('username')}
                         className="mb-3"
                       >
                         <Form.Control
                           name="username"
                           autoComplete="username"
                           required
-                          placeholder={t('yourNickname')}
+                          placeholder={t('username')}
                           value={values.username}
                           onChange={handleChange}
                           isInvalid={
-                            authFailed || (touched.username && !!errors.username)
+                            signupFailed || (touched.username && !!errors.username)
                           }
                           ref={inputRef}
                         />
@@ -110,19 +131,35 @@ const LoginPage = () => {
                         <Form.Control
                           type="password"
                           name="password"
-                          autoComplete="current-password"
+                          autoComplete="new-password"
                           required
                           placeholder={t('password')}
                           value={values.password}
                           onChange={handleChange}
-                          isInvalid={
-                            authFailed || (touched.password && !!errors.password)
-                          }
+                          isInvalid={touched.password && !!errors.password}
                         />
-                        <Form.Control.Feedback type="invalid" tooltip>
-                          {authFailed
-                            ? t('wrongCredentials')
-                            : errors.password}
+                        <Form.Control.Feedback type="invalid">
+                          {errors.password}
+                        </Form.Control.Feedback>
+                      </FloatingLabel>
+
+                      <FloatingLabel
+                        controlId="confirmPassword"
+                        label={t('confirmPassword')}
+                        className="mb-4"
+                      >
+                        <Form.Control
+                          type="password"
+                          name="confirmPassword"
+                          autoComplete="new-password"
+                          required
+                          placeholder={t('confirmPassword')}
+                          value={values.confirmPassword}
+                          onChange={handleChange}
+                          isInvalid={touched.confirmPassword && !!errors.confirmPassword}
+                        />
+                        <Form.Control.Feedback type="invalid">
+                          {errors.confirmPassword}
                         </Form.Control.Feedback>
                       </FloatingLabel>
 
@@ -132,7 +169,7 @@ const LoginPage = () => {
                         variant="outline-primary"
                         className="w-100 mb-3"
                       >
-                        {t('login')}
+                        {t('signupButton')}
                       </Button>
                     </Form>
                   )}
@@ -140,8 +177,8 @@ const LoginPage = () => {
               </div>
             </div>
             <div className="card-footer p-4 text-center">
-              <span>{t('noAccount')} </span>
-              <a href="/signup">{t('registration')}</a>
+              <span>{t('alreadyHaveAccount')} </span>
+              <a href="/login">{t('login')}</a>
             </div>
           </div>
         </Col>
@@ -150,4 +187,4 @@ const LoginPage = () => {
   );
 };
 
-export default LoginPage;
+export default SignupPage;

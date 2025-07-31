@@ -1,9 +1,11 @@
 import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
+import { useTranslation } from 'react-i18next';
 import { logout } from '../slices/authSlice';
 import { useNavigate } from 'react-router-dom';
 
 const Header = () => {
+  const { t } = useTranslation();
   const token = useSelector((state) => state.auth.token);
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -19,7 +21,7 @@ const Header = () => {
         <a className="navbar-brand" href="/">Hexlet Chat</a>
         {token && (
           <button type="button" className="btn btn-primary" onClick={handleLogout}>
-            Выйти
+            {t('logout')}
           </button>
         )}
       </div>

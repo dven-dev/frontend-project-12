@@ -1,7 +1,5 @@
-// slices/channelsSlice.js
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 
-// Async thunk для загрузки каналов
 export const fetchChannels = createAsyncThunk(
   'channels/fetchChannels',
   async (_, { rejectWithValue }) => {
@@ -25,7 +23,6 @@ export const fetchChannels = createAsyncThunk(
   }
 );
 
-// Async thunk для создания канала
 export const createChannel = createAsyncThunk(
   'channels/createChannel',
   async (channelData, { rejectWithValue }) => {
@@ -49,7 +46,6 @@ export const createChannel = createAsyncThunk(
   }
 );
 
-// Async thunk для переименования канала
 export const renameChannel = createAsyncThunk(
   'channels/renameChannel',
   async ({ id, name }, { rejectWithValue }) => {
@@ -73,7 +69,6 @@ export const renameChannel = createAsyncThunk(
   }
 );
 
-// Async thunk для удаления канала
 export const deleteChannel = createAsyncThunk(
   'channels/deleteChannel',
   async (channelId, { rejectWithValue }) => {
@@ -110,7 +105,6 @@ const channelsSlice = createSlice({
       state.currentChannelId = payload;
     },
     addChannel: (state, { payload }) => {
-      // Проверяем, что канал еще не существует
       const exists = state.channels.find(ch => ch.id === payload.id);
       if (!exists) {
         state.channels.push(payload);
@@ -124,7 +118,6 @@ const channelsSlice = createSlice({
     },
     removeChannel: (state, { payload }) => {
       state.channels = state.channels.filter(ch => ch.id !== payload.id);
-      // Если удаляется текущий канал, переключаемся на первый
       if (state.currentChannelId === payload.id) {
         state.currentChannelId = state.channels[0]?.id || null;
       }
@@ -132,7 +125,6 @@ const channelsSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
-      // Загрузка каналов
       .addCase(fetchChannels.pending, (state) => {
         state.loading = true;
         state.error = null;
@@ -140,7 +132,7 @@ const channelsSlice = createSlice({
       .addCase(fetchChannels.fulfilled, (state, { payload }) => {
         state.loading = false;
         state.channels = payload;
-        // Устанавливаем первый канал как текущий, если не выбран
+        
         if (!state.currentChannelId && payload.length > 0) {
           state.currentChannelId = payload[0].id;
         }
@@ -149,18 +141,13 @@ const channelsSlice = createSlice({
         state.loading = false;
         state.error = payload;
       })
-      // Создание канала - НЕ добавляем канал здесь, он придет через WebSocket
       .addCase(createChannel.fulfilled, (state, { payload }) => {
-        // Переключаемся на созданный канал (он уже будет добавлен через WebSocket)
         state.currentChannelId = payload.id;
       })
-      // Переименование канала - НЕ обновляем канал здесь, он придет через WebSocket
       .addCase(renameChannel.fulfilled, (state) => {
-        // Ничего не делаем, обновление придет через WebSocket
+       
       })
-      // Удаление канала - НЕ удаляем канал здесь, он придет через WebSocket
       .addCase(deleteChannel.fulfilled, (state) => {
-        // Ничего не делаем, удаление придет через WebSocket
       });
   },
 });

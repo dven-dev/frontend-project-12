@@ -1,57 +1,67 @@
-// components/modals/RemoveChannelModal.jsx
-import React from 'react';
+import React, { useState } from 'react';
+import { Modal, Button } from 'react-bootstrap';
 import { useDispatch } from 'react-redux';
+import { useTranslation } from 'react-i18next';
+import { toast } from 'react-toastify';
 import { deleteChannel } from '../../slices/channelsSlice.js';
 
 const RemoveChannelModal = ({ show, onHide, channel }) => {
+  const { t } = useTranslation();
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const dispatch = useDispatch();
 
   const handleConfirm = async () => {
+    if (!channel) return;
+
+    setIsSubmitting(true);
     try {
       await dispatch(deleteChannel(channel.id)).unwrap();
+      toast.success(t('channelRemoved'));
       onHide();
     } catch (error) {
       console.error('Ошибка удаления канала:', error);
+      toast.error(t('channelRemoveError'));
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
-  if (!show || !channel) return null;
+  const handleClose = () => {
+    if (!isSubmitting) {
+      onHide();
+    }
+  };
 
   return (
-    <div className="modal show d-block" tabIndex="-1" role="dialog">
-      <div className="modal-dialog" role="document">
-        <div className="modal-content">
-          <div className="modal-header">
-            <h5 className="modal-title">Удалить канал</h5>
-            <button
-              type="button"
-              className="btn-close"
-              aria-label="Закрыть"
-              onClick={onHide}
-            />
-          </div>
-          <div className="modal-body">
-            <p>Уверены?</p>
-          </div>
-          <div className="modal-footer">
-            <button
-              type="button"
-              className="btn btn-secondary"
-              onClick={onHide}
-            >
-              Отменить
-            </button>
-            <button
-              type="button"
-              className="btn btn-danger"
-              onClick={handleConfirm}
-            >
-              Удалить
-            </button>
-          </div>
-        </div>
-      </div>
-    </div>
+    <Modal show={show} onHide={handleClose} centered>
+      <Modal.Header closeButton>
+        <Modal.Title>{t('removeChannel')}</Modal.Title>
+      </Modal.Header>
+      <Modal.Body>
+        <p>{t('removeChannelConfirm')}</p>
+        {channel && (
+          <p className="text-muted">
+            <strong>#{channel.name}</strong>
+          </p>
+        )}
+      </Modal.Body>
+      <Modal.Footer>
+        <Button
+          variant="secondary"
+          onClick={handleClose}
+          disabled={isSubmitting}
+        >
+          {t('cancel')}
+        </Button>
+        <Button
+          variant="danger"
+          onClick={handleConfirm}
+          disabled={isSubmitting}
+        >
+          {t('remove')}
+        </Button>
+      </Modal.Footer>
+    </Modal>
   );
 };
 

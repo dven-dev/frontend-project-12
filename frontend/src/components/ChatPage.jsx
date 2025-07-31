@@ -1,6 +1,6 @@
-// components/ChatPage.jsx
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { useTranslation } from 'react-i18next';
 import { fetchChannels, setCurrentChannelId, addChannel, updateChannel, removeChannel } from '../slices/channelsSlice.js';
 import { fetchMessages, addMessage, sendMessage } from '../slices/messagesSlice.js';
 import socket from '../services/socket.js';
@@ -10,19 +10,20 @@ import RemoveChannelModal from './modals/RemoveChannelModal.jsx';
 import ChannelDropdown from './ChannelDropdown.jsx';
 
 const ChatPage = () => {
+  const { t } = useTranslation();
   const dispatch = useDispatch();
   const { channels, currentChannelId, loading: channelsLoading } = useSelector((state) => state.channels);
   const { messages, loading: messagesLoading, sending } = useSelector((state) => state.messages);
   const { username } = useSelector((state) => state.auth);
   const [newMessage, setNewMessage] = useState('');
   
-  // Состояния модальных окон
+ 
   const [showAddModal, setShowAddModal] = useState(false);
   const [showRenameModal, setShowRenameModal] = useState(false);
   const [showRemoveModal, setShowRemoveModal] = useState(false);
   const [selectedChannel, setSelectedChannel] = useState(null);
 
-  // Socket события
+  
   useEffect(() => {
     socket.on('connect', () => {
       console.log('Socket подключен');
@@ -36,12 +37,10 @@ const ChatPage = () => {
       console.log('Ошибка подключения:', error);
     });
 
-    // Обработка сообщений
     socket.on('newMessage', (message) => {
       dispatch(addMessage(message));
     });
 
-    // Обработка каналов
     socket.on('newChannel', (channel) => {
       dispatch(addChannel(channel));
     });
@@ -65,13 +64,13 @@ const ChatPage = () => {
     };
   }, [dispatch]);
 
-  // Загрузка данных при монтировании
+ 
   useEffect(() => {
     dispatch(fetchChannels());
     dispatch(fetchMessages());
   }, [dispatch]);
 
-  // Отправка сообщения через HTTP API (не socket.emit!)
+
   const handleSend = async (e) => {
     e.preventDefault();
     
@@ -97,19 +96,19 @@ const ChatPage = () => {
     }
   };
 
-  // Переключение канала
+ 
   const handleChannelSelect = (channelId) => {
     dispatch(setCurrentChannelId(channelId));
   };
 
-  // Фильтрация сообщений по текущему каналу
+ 
   const currentMessages = messages.filter((msg) => 
     String(msg.channelId) === String(currentChannelId)
   );
 
   const currentChannel = channels.find(ch => ch.id === currentChannelId);
 
-  // Обработчики модальных окон
+ 
   const handleShowAddModal = () => setShowAddModal(true);
   const handleHideAddModal = () => setShowAddModal(false);
 
@@ -131,14 +130,14 @@ const ChatPage = () => {
     setSelectedChannel(null);
   };
 
-  // Проверяем, является ли канал удаляемым (не дефолтный)
+ 
   const isChannelRemovable = (channel) => {
-    // Каналы general и random нельзя удалять
+   
     const defaultChannels = ['general', 'random'];
     return !defaultChannels.includes(channel.name) && channel.removable !== false;
   };
 
-  // Проверяем, можно ли переименовать канал
+ 
   const isChannelRenamable = (channel) => {
     // Каналы general и random нельзя переименовывать
     const defaultChannels = ['general', 'random'];
@@ -149,7 +148,7 @@ const ChatPage = () => {
     return (
       <div className="d-flex justify-content-center align-items-center h-100">
         <div className="spinner-border" role="status">
-          <span className="visually-hidden">Загрузка...</span>
+          <span className="visually-hidden">{t('loading')}</span>
         </div>
       </div>
     );
@@ -158,11 +157,11 @@ const ChatPage = () => {
   return (
     <div className="container my-4 h-100 overflow-hidden rounded shadow">
       <div className="row h-100 bg-white flex-md-row">
-        {/* Левая панель - Каналы */}
+       
         <div className="col-4 col-md-2 border-end px-0 bg-light h-100 d-flex flex-column">
           {/* Заголовок с кнопкой добавления */}
           <div className="d-flex mt-1 justify-content-between mb-2 ps-4 pe-2 p-4">
-            <b>Каналы</b>
+            <b>{t('channels')}</b>
             <button
               type="button"
               className="p-0 text-primary btn btn-group-vertical"
@@ -176,7 +175,7 @@ const ChatPage = () => {
             </button>
           </div>
 
-          {/* Список каналов */}
+        
           <ul className="nav flex-column nav-pills nav-fill px-2 mb-3 overflow-auto h-100 d-block">
             {channels.map((channel) => (
               <li key={channel.id} className="nav-item w-100">
@@ -194,23 +193,23 @@ const ChatPage = () => {
           </ul>
         </div>
 
-        {/* Правая панель - Сообщения */}
+        
         <div className="col p-0 d-flex flex-column h-100">
           {/* Заголовок канала */}
           <div className="bg-light mb-4 p-3 shadow-sm small">
             <p className="m-0">
-              <b># {currentChannel?.name || 'Канал не выбран'}</b>
+              <b># {currentChannel?.name || t('channelNotSelected')}</b>
             </p>
             <span className="text-muted">
-              {currentMessages.length} сообщений
+              {t('messages', { count: currentMessages.length })}
             </span>
           </div>
 
-          {/* Область сообщений */}
+        
           <div className="chat-messages overflow-auto px-5 mb-3">
             {currentMessages.length === 0 ? (
               <div style={{color: '#999', textAlign: 'center', padding: '20px'}}>
-                Сообщений пока нет. Напишите первое!
+                {t('noMessagesYet')}
               </div>
             ) : (
               currentMessages.map((msg) => (
@@ -221,14 +220,14 @@ const ChatPage = () => {
             )}
           </div>
 
-          {/* Форма отправки сообщения */}
+         
           <div className="mt-auto px-5 py-3">
             <form onSubmit={handleSend} className="py-1 border rounded-2">
               <div className="input-group has-validation">
                 <input
                   name="body"
-                  aria-label="Новое сообщение"
-                  placeholder="Введите сообщение..."
+                  aria-label={t('enterMessage')}
+                  placeholder={t('enterMessage')}
                   className="border-0 p-0 ps-2 form-control"
                   value={newMessage}
                   onChange={(e) => setNewMessage(e.target.value)}
@@ -243,7 +242,7 @@ const ChatPage = () => {
                   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" width="20" height="20" fill="currentColor">
                     <path fillRule="evenodd" d="M15 2a1 1 0 0 0-1-1H2a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V2ZM0 2a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V2Zm4.5 5.5a.5.5 0 0 0 0 1h5.793l-2.147 2.146a.5.5 0 0 0 .708.708l3-3a.5.5 0 0 0 0-.708l-3-3a.5.5 0 1 0-.708.708L10.293 7.5H4.5Z"/>
                   </svg>
-                  <span className="visually-hidden">Отправить</span>
+                  <span className="visually-hidden">{t('send')}</span>
                 </button>
               </div>
             </form>
@@ -251,7 +250,7 @@ const ChatPage = () => {
         </div>
       </div>
       
-      {/* Модальные окна */}
+     
       <AddChannelModal 
         show={showAddModal} 
         onHide={handleHideAddModal} 

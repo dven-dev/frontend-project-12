@@ -1,104 +1,72 @@
-// components/ChannelDropdown.jsx
-import React, { useState, useRef, useEffect } from 'react';
+import React from 'react';
+import { Dropdown, ButtonGroup } from 'react-bootstrap';
+import { useTranslation } from 'react-i18next';
 
-const ChannelDropdown = ({ channel, onRename, onRemove, isRemovable = true, isRenamable = true, isActive = false, onSelect }) => {
-  const [isOpen, setIsOpen] = useState(false);
-  const dropdownRef = useRef();
+const ChannelDropdown = ({ 
+  channel, 
+  onRename, 
+  onRemove, 
+  isRemovable = true, 
+  isRenamable = true, 
+  isActive = false, 
+  onSelect 
+}) => {
+  const { t } = useTranslation();
 
-  useEffect(() => {
-    const handleClickOutside = (event) => {
-      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
-        setIsOpen(false);
-      }
-    };
-
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
-    };
-  }, []);
-
-  const handleToggle = (e) => {
-    e.stopPropagation();
-    setIsOpen(!isOpen);
+  const handleSelect = (e) => {
+    e.preventDefault();
+    onSelect();
   };
 
   const handleRename = (e) => {
     e.preventDefault();
     e.stopPropagation();
     onRename(channel);
-    setIsOpen(false);
   };
 
   const handleRemove = (e) => {
     e.preventDefault();
-    e.stopPropagation();
+    e.stopPropagation();  
     onRemove(channel);
-    setIsOpen(false);
   };
 
   return (
-    <div role="group" className={`d-flex dropdown btn-group ${isOpen ? 'show' : ''}`} ref={dropdownRef}>
+    <Dropdown as={ButtonGroup} className="d-flex">
       <button
         type="button"
         className={`w-100 rounded-0 text-start text-truncate btn ${
-          isActive ? 'bg-secondary text-white' : 'text-dark'
+          isActive ? 'btn-secondary' : 'btn-light'
         }`}
-        onClick={(e) => {
-          e.stopPropagation();
-          onSelect();
-        }}
+        onClick={handleSelect}
       >
-        <span className="me-1">#</span>
-        {channel.name}
+        <span># {channel.name}</span>
       </button>
-      
-      {/* Показываем кнопку выпадающего меню только если есть доступные действия */}
-      {(isRemovable || isRenamable) && (
-        <button
-          type="button"
-          className={`flex-grow-0 dropdown-toggle dropdown-toggle-split btn ${isOpen ? 'show' : ''}`}
-          onClick={handleToggle}
-          aria-expanded={isOpen}
-        >
-          <span className="visually-hidden">Управление каналом</span>
-        </button>
+
+      {(isRenamable || isRemovable) && (
+        <Dropdown.Toggle
+          split
+          className={`flex-grow-0 dropdown-toggle-split btn ${
+            isActive ? 'btn-secondary' : 'btn-light'
+          }`}
+          id={`dropdown-split-${channel.id}`}
+        />
       )}
-      
-      {isOpen && (isRemovable || isRenamable) && (
-        <div 
-          className="dropdown-menu show position-absolute"
-          style={{
-            position: 'absolute',
-            inset: '0px 0px auto auto',
-            transform: 'translate(0px, 40px)'
-          }}
-        >
-          {isRemovable && (
-            <a
-              className="dropdown-item"
-              role="button"
-              tabIndex="0"
-              href="#"
-              onClick={handleRemove}
-            >
-              Удалить
-            </a>
-          )}
+
+      {(isRenamable || isRemovable) && (
+        <Dropdown.Menu>
           {isRenamable && (
-            <a
-              className="dropdown-item"
-              role="button"
-              tabIndex="0"
-              href="#"
-              onClick={handleRename}
-            >
-              Переименовать
-            </a>
+            <Dropdown.Item onClick={handleRename}>
+              {t('renameChannel')}
+            </Dropdown.Item>
           )}
-        </div>
+          {isRemovable && (
+            <Dropdown.Item onClick={handleRemove}>
+              {t('removeChannel')}
+            </Dropdown.Item>
+          )}
+        </Dropdown.Menu>
       )}
-    </div>
+    </Dropdown>
   );
 };
 

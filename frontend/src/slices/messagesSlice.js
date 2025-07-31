@@ -1,8 +1,6 @@
-// slices/messagesSlice.js
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import { removeChannel } from './channelsSlice.js';
 
-// Async thunk для загрузки сообщений
 export const fetchMessages = createAsyncThunk(
   'messages/fetchMessages',
   async (_, { rejectWithValue }) => {
@@ -26,7 +24,6 @@ export const fetchMessages = createAsyncThunk(
   }
 );
 
-// Async thunk для отправки сообщения
 export const sendMessage = createAsyncThunk(
   'messages/sendMessage',
   async (messageData, { rejectWithValue }) => {
@@ -87,7 +84,6 @@ const messagesSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
-      // Загрузка сообщений
       .addCase(fetchMessages.pending, (state) => {
         state.loading = true;
         state.error = null;
@@ -100,20 +96,17 @@ const messagesSlice = createSlice({
         state.loading = false;
         state.error = payload;
       })
-      // Отправка сообщения
       .addCase(sendMessage.pending, (state) => {
         state.sending = true;
         state.error = null;
       })
       .addCase(sendMessage.fulfilled, (state) => {
         state.sending = false;
-        // НЕ добавляем сообщение здесь - оно придет через WebSocket!
       })
       .addCase(sendMessage.rejected, (state, { payload }) => {
         state.sending = false;
         state.error = payload;
       })
-      // Удаление сообщений при удалении канала
       .addCase(removeChannel, (state, { payload }) => {
         state.messages = state.messages.filter(msg => msg.channelId !== payload.id);
       });
