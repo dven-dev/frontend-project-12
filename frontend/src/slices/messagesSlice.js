@@ -1,6 +1,13 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import { removeChannel } from './channelsSlice.js';
 
+const getApiUrl = () => {
+  if (window.location.hostname === 'localhost') {
+    return 'http://localhost:5001/api/v1';
+  }
+  return '/api/v1'; 
+};
+
 export const fetchMessages = createAsyncThunk(
   'messages/fetchMessages',
   async (_, { rejectWithValue }) => {
@@ -8,7 +15,7 @@ export const fetchMessages = createAsyncThunk(
       const token = localStorage.getItem('token');
       if (!token) throw new Error('No token');
 
-      const response = await fetch('/api/v1/messages', {
+      const response = await fetch(`${getApiUrl()}/messages`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -30,7 +37,7 @@ export const sendMessage = createAsyncThunk(
     try {
       const token = localStorage.getItem('token');
       
-      const response = await fetch('/api/v1/messages', {
+      const response = await fetch(`${getApiUrl()}/messages`, {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${token}`,

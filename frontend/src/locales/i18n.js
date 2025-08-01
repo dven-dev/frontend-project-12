@@ -57,18 +57,19 @@ const resources = {
       connectionRestored: 'Соединение восстановлено',
       
       
-      messages: 'Введите сообщение...',
       enterMessage: 'Введите сообщение...',
       sendMessage: 'Отправить',
       newMessage: 'Новое сообщение',
       noMessages: 'Пока нет сообщений...',
+      
+      messagesCount: '{{count}} сообщение',
       messagesCount_zero: '{{count}} сообщений',
       messagesCount_one: '{{count}} сообщение',
       messagesCount_few: '{{count}} сообщения',
       messagesCount_many: '{{count}} сообщений',
       messageSent: 'Сообщение отправлено',
       messageSendError: 'Ошибка отправки сообщения',
-      noMessageYet: 'Напишите первым!',
+      noMessagesYet: 'Напишите первым!',
       
      
       notFound: 'Страница не найдена',
@@ -77,11 +78,6 @@ const resources = {
      
       hexletChat: 'Hexlet Chat',
       logout: 'Выйти',
-
-     
-      general: {
-        messages: 'сообщений'
-      }
     },
   },
 };
@@ -95,7 +91,7 @@ i18n
     interpolation: {
       escapeValue: false,
     },
-  
+    
     pluralSeparator: '_',
     contextSeparator: '_',
   });

@@ -1,5 +1,12 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 
+const getApiUrl = () => {
+  if (window.location.hostname === 'localhost') {
+    return 'http://localhost:5001/api/v1';
+  }
+  return '/api/v1'; 
+};
+
 export const fetchChannels = createAsyncThunk(
   'channels/fetchChannels',
   async (_, { rejectWithValue }) => {
@@ -7,7 +14,7 @@ export const fetchChannels = createAsyncThunk(
       const token = localStorage.getItem('token');
       if (!token) throw new Error('No token');
 
-      const response = await fetch('/api/v1/channels', {
+      const response = await fetch(`${getApiUrl()}/channels`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -28,7 +35,7 @@ export const createChannel = createAsyncThunk(
   async (channelData, { rejectWithValue }) => {
     try {
       const token = localStorage.getItem('token');
-      const response = await fetch('/api/v1/channels', {
+      const response = await fetch(`${getApiUrl()}/channels`, {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${token}`,
@@ -51,7 +58,7 @@ export const renameChannel = createAsyncThunk(
   async ({ id, name }, { rejectWithValue }) => {
     try {
       const token = localStorage.getItem('token');
-      const response = await fetch(`/api/v1/channels/${id}`, {
+      const response = await fetch(`${getApiUrl()}/channels/${id}`, {
         method: 'PATCH',
         headers: {
           'Authorization': `Bearer ${token}`,
@@ -74,7 +81,7 @@ export const deleteChannel = createAsyncThunk(
   async (channelId, { rejectWithValue }) => {
     try {
       const token = localStorage.getItem('token');
-      const response = await fetch(`/api/v1/channels/${channelId}`, {
+      const response = await fetch(`${getApiUrl()}/channels/${channelId}`, {
         method: 'DELETE',
         headers: {
           'Authorization': `Bearer ${token}`,
@@ -119,7 +126,9 @@ const channelsSlice = createSlice({
     removeChannel: (state, { payload }) => {
       state.channels = state.channels.filter(ch => ch.id !== payload.id);
       if (state.currentChannelId === payload.id) {
-        state.currentChannelId = state.channels[0]?.id || null;
+    
+        const generalChannel = state.channels.find(ch => ch.name === 'general');
+        state.currentChannelId = generalChannel?.id || state.channels[0]?.id || null;
       }
     },
   },
@@ -134,7 +143,8 @@ const channelsSlice = createSlice({
         state.channels = payload;
         
         if (!state.currentChannelId && payload.length > 0) {
-          state.currentChannelId = payload[0].id;
+          const generalChannel = payload.find(ch => ch.name === 'general');
+          state.currentChannelId = generalChannel?.id || payload[0].id;
         }
       })
       .addCase(fetchChannels.rejected, (state, { payload }) => {
