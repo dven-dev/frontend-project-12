@@ -1,12 +1,9 @@
 const rollbarConfig = {
-  accessToken: 'f26c5f32bd1e445b9e88d8a180c9c532',
-  // Определяем окружение в зависимости от того, где запускается приложение
-  environment: process.env.NODE_ENV === 'production' ? 'production' : 'development',
-  // Включаем Rollbar только в production или для тестирования
+  accessToken: import.meta.env.VITE_ROLLBAR_ACCESS_TOKEN || 'f26c5f32bd1e445b9e88d8a180c9c532',
+  environment: import.meta.env.VITE_ROLLBAR_ENVIRONMENT || (import.meta.env.PROD ? 'production' : 'development'),
   enabled: true,
   captureUncaught: true,
   captureUnhandledRejections: true,
-  // Дополнительные настройки
   payload: {
     client: {
       javascript: {

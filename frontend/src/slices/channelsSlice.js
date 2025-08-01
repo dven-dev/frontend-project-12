@@ -1,11 +1,6 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
+import { getApiUrl } from '../services/apiUtils.js';
 
-const getApiUrl = () => {
-  if (window.location.hostname === 'localhost') {
-    return 'http://localhost:5001/api/v1';
-  }
-  return '/api/v1'; 
-};
 
 export const fetchChannels = createAsyncThunk(
   'channels/fetchChannels',

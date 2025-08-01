@@ -1,11 +1,6 @@
+// Обновите src/services/socket.js
 import { io } from 'socket.io-client';
-
-const getSocketUrl = () => {
-  if (window.location.hostname === 'localhost') {
-    return 'http://localhost:5001';
-  }
-  return window.location.origin;
-};
+import { getSocketUrl } from '../services/apiUtils.js';
 
 // Создаем функцию для инициализации сокета
 const createSocket = () => {
@@ -16,7 +11,9 @@ const createSocket = () => {
     return null;
   }
 
-  const socket = io(getSocketUrl(), {
+  const socketUrl = getSocketUrl();
+  
+  const socket = io(socketUrl, {
     transports: ['websocket', 'polling'], 
     auth: {
       token,
@@ -25,13 +22,12 @@ const createSocket = () => {
     reconnectionDelay: 1000,
     reconnectionAttempts: 5,
     timeout: 20000,
-    // Добавим дополнительные опции для лучшей совместимости
     forceNew: true,
     upgrade: true,
   });
 
   socket.on('connect', () => {
-    console.log('Socket connected to:', getSocketUrl());
+    console.log('Socket connected to:', socketUrl);
     console.log('Socket ID:', socket.id);
   });
 
@@ -42,7 +38,6 @@ const createSocket = () => {
   socket.on('connect_error', (error) => {
     console.error('Socket connection error:', error);
     
-    // Если ошибка связана с аутентификацией
     if (error.message && error.message.includes('unauthorized')) {
       console.log('Socket authentication failed, redirecting to login');
       localStorage.removeItem('token');
@@ -54,7 +49,6 @@ const createSocket = () => {
   return socket;
 };
 
-// Экспортируем функцию создания сокета, а не сам сокет
 let socket = null;
 
 const getSocket = () => {
@@ -64,7 +58,6 @@ const getSocket = () => {
   return socket;
 };
 
-// Функция для переподключения сокета после логина
 const reconnectSocket = () => {
   if (socket) {
     socket.disconnect();

@@ -6,6 +6,7 @@ import { toast } from 'react-toastify';
 import { Formik } from 'formik';
 import * as Yup from 'yup';
 import { renameChannel } from '../../slices/channelsSlice.js';
+import { containsProfanity, cleanText } from '../../services/profanityFilter.js';
 
 const RenameChannelModal = ({ show, onHide, channel }) => {
   const { t } = useTranslation();
@@ -14,7 +15,7 @@ const RenameChannelModal = ({ show, onHide, channel }) => {
   const inputRef = useRef();
 
   const channelNames = channels
-    .filter(ch => ch.id !== channel?.id)
+    .filter(ch => ch.id !== channel?.id) // Исключаем текущий канал из проверки уникальности
     .map(ch => ch.name);
 
   const validationSchema = Yup.object({
@@ -22,24 +23,32 @@ const RenameChannelModal = ({ show, onHide, channel }) => {
       .min(3, t('channelNameLength'))
       .max(20, t('channelNameLength'))
       .notOneOf(channelNames, t('channelMustBeUnique'))
+      .test('profanity', t('channelNameContainsProfanity'), 
+        value => !containsProfanity(value || ''))
       .required(t('requiredField')),
   });
 
   useEffect(() => {
-    if (show && channel) {
+    if (show) {
       setTimeout(() => {
         inputRef.current?.focus();
-        inputRef.current?.select();
+        inputRef.current?.select(); // Выделяем текст для удобства редактирования
       }, 100);
     }
-  }, [show, channel]);
+  }, [show]);
 
   const handleSubmit = async (values, { setSubmitting }) => {
+    if (!channel) return;
+    
     try {
-      await dispatch(renameChannel({
-        id: channel.id,
-        name: values.name.trim(),
+      // Дополнительная очистка имени канала
+      const cleanedName = cleanText(values.name.trim());
+      
+      await dispatch(renameChannel({ 
+        id: channel.id, 
+        name: cleanedName 
       })).unwrap();
+      
       toast.success(t('channelRenamed'));
       onHide();
     } catch (error) {
@@ -58,9 +67,10 @@ const RenameChannelModal = ({ show, onHide, channel }) => {
         <Modal.Title>{t('renameChannel')}</Modal.Title>
       </Modal.Header>
       <Formik
-        initialValues={{ name: channel.name }}
+        initialValues={{ name: channel.name || '' }}
         validationSchema={validationSchema}
         onSubmit={handleSubmit}
+        enableReinitialize // Позволяет обновлять начальные значения при изменении channel
       >
         {({
           handleSubmit,
@@ -103,7 +113,7 @@ const RenameChannelModal = ({ show, onHide, channel }) => {
               <Button
                 variant="primary"
                 type="submit"
-                disabled={isSubmitting || !values.name.trim()}
+                disabled={isSubmitting || !values.name.trim() || values.name === channel.name}
               >
                 {t('rename')}
               </Button>
