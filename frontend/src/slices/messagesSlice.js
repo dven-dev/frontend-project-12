@@ -13,19 +13,33 @@ export const fetchMessages = createAsyncThunk(
   async (_, { rejectWithValue }) => {
     try {
       const token = localStorage.getItem('token');
-      if (!token) throw new Error('No token');
+      if (!token) {
+        throw new Error('No authentication token');
+      }
 
       const response = await fetch(`${getApiUrl()}/messages`, {
+        method: 'GET',
         headers: {
-          Authorization: `Bearer ${token}`,
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json',
         },
       });
 
-      if (!response.ok) throw new Error('Failed to fetch messages');
+      if (response.status === 401) {
+        localStorage.removeItem('token');
+        localStorage.removeItem('username');
+        window.location.href = '/login';
+        throw new Error('Unauthorized - please login again');
+      }
+
+      if (!response.ok) {
+        throw new Error(`Failed to fetch messages: ${response.status} ${response.statusText}`);
+      }
       
       const data = await response.json();
       return Array.isArray(data) ? data : data.messages || [];
     } catch (error) {
+      console.error('Fetch messages error:', error);
       return rejectWithValue(error.message);
     }
   }
@@ -36,6 +50,9 @@ export const sendMessage = createAsyncThunk(
   async (messageData, { rejectWithValue }) => {
     try {
       const token = localStorage.getItem('token');
+      if (!token) {
+        throw new Error('No authentication token');
+      }
       
       const response = await fetch(`${getApiUrl()}/messages`, {
         method: 'POST',
@@ -46,6 +63,13 @@ export const sendMessage = createAsyncThunk(
         body: JSON.stringify(messageData),
       });
 
+      if (response.status === 401) {
+        localStorage.removeItem('token');
+        localStorage.removeItem('username');
+        window.location.href = '/login';
+        throw new Error('Unauthorized - please login again');
+      }
+
       if (!response.ok) {
         const errorText = await response.text();
         throw new Error(`HTTP ${response.status}: ${errorText}`);
@@ -54,6 +78,7 @@ export const sendMessage = createAsyncThunk(
       const result = await response.json();
       return result;
     } catch (error) {
+      console.error('Send message error:', error);
       return rejectWithValue(error.message);
     }
   }

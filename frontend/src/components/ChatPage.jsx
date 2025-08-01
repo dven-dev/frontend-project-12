@@ -1,9 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useTranslation } from 'react-i18next';
+import { toast } from 'react-toastify';
 import { fetchChannels, setCurrentChannelId, addChannel, updateChannel, removeChannel } from '../slices/channelsSlice.js';
 import { fetchMessages, addMessage, sendMessage } from '../slices/messagesSlice.js';
-import socket from '../services/socket.js';
+import { getSocket } from '../services/socket.js';
+import { cleanText, containsProfanity } from '../services/profanityFilter.js';
 import AddChannelModal from './modals/AddChannelModal.jsx';
 import RenameChannelModal from './modals/RenameChannelModal.jsx';
 import RemoveChannelModal from './modals/RemoveChannelModal.jsx';
@@ -17,59 +19,72 @@ const ChatPage = () => {
   const { username } = useSelector((state) => state.auth);
   const [newMessage, setNewMessage] = useState('');
   
- 
   const [showAddModal, setShowAddModal] = useState(false);
   const [showRenameModal, setShowRenameModal] = useState(false);
   const [showRemoveModal, setShowRemoveModal] = useState(false);
   const [selectedChannel, setSelectedChannel] = useState(null);
 
-  
   useEffect(() => {
-    socket.on('connect', () => {
+    const socket = getSocket();
+    
+    if (!socket) {
+      console.warn('Socket not available - user not authenticated');
+      return;
+    }
+
+    const handleConnect = () => {
       console.log('Socket подключен');
-    });
+    };
 
-    socket.on('disconnect', () => {
+    const handleDisconnect = () => {
       console.log('Socket отключен');
-    });
+    };
 
-    socket.on('connect_error', (error) => {
+    const handleConnectError = (error) => {
       console.log('Ошибка подключения:', error);
-    });
+    };
 
-    socket.on('newMessage', (message) => {
+    const handleNewMessage = (message) => {
       dispatch(addMessage(message));
-    });
+    };
 
-    socket.on('newChannel', (channel) => {
+    const handleNewChannel = (channel) => {
       dispatch(addChannel(channel));
-    });
+    };
 
-    socket.on('renameChannel', (channel) => {
+    const handleRenameChannel = (channel) => {
       dispatch(updateChannel(channel));
-    });
+    };
 
-    socket.on('removeChannel', (payload) => {
+    const handleRemoveChannel = (payload) => {
       dispatch(removeChannel(payload));
-    });
+    };
+
+    socket.on('connect', handleConnect);
+    socket.on('disconnect', handleDisconnect);
+    socket.on('connect_error', handleConnectError);
+    socket.on('newMessage', handleNewMessage);
+    socket.on('newChannel', handleNewChannel);
+    socket.on('renameChannel', handleRenameChannel);
+    socket.on('removeChannel', handleRemoveChannel);
 
     return () => {
-      socket.off('newMessage');
-      socket.off('newChannel');
-      socket.off('renameChannel');
-      socket.off('removeChannel');
-      socket.off('connect');
-      socket.off('disconnect');
-      socket.off('connect_error');
+      if (socket) {
+        socket.off('connect', handleConnect);
+        socket.off('disconnect', handleDisconnect);
+        socket.off('connect_error', handleConnectError);
+        socket.off('newMessage', handleNewMessage);
+        socket.off('newChannel', handleNewChannel);
+        socket.off('renameChannel', handleRenameChannel);
+        socket.off('removeChannel', handleRemoveChannel);
+      }
     };
   }, [dispatch]);
 
- 
   useEffect(() => {
     dispatch(fetchChannels());
     dispatch(fetchMessages());
   }, [dispatch]);
-
 
   const handleSend = async (e) => {
     e.preventDefault();
@@ -82,8 +97,17 @@ const ChatPage = () => {
       return;
     }
 
+    // Проверка на нецензурные слова
+    if (containsProfanity(newMessage.trim())) {
+      toast.error(t('messageContainsProfanity') || 'Сообщение содержит недопустимые слова');
+      return;
+    }
+
+    // Очистка текста (дополнительная мера)
+    const cleanedMessage = cleanText(newMessage.trim());
+
     const messageData = {
-      body: newMessage.trim(),
+      body: cleanedMessage,
       channelId: currentChannelId,
       username: username || localStorage.getItem('username') || 'User',
     };
@@ -96,19 +120,16 @@ const ChatPage = () => {
     }
   };
 
- 
   const handleChannelSelect = (channelId) => {
     dispatch(setCurrentChannelId(channelId));
   };
 
- 
   const currentMessages = messages.filter((msg) => 
     String(msg.channelId) === String(currentChannelId)
   );
 
   const currentChannel = channels.find(ch => ch.id === currentChannelId);
 
- 
   const handleShowAddModal = () => setShowAddModal(true);
   const handleHideAddModal = () => setShowAddModal(false);
 
@@ -130,14 +151,11 @@ const ChatPage = () => {
     setSelectedChannel(null);
   };
 
- 
   const isChannelRemovable = (channel) => {
-   
     const defaultChannels = ['general', 'random'];
     return !defaultChannels.includes(channel.name) && channel.removable !== false;
   };
 
- 
   const isChannelRenamable = (channel) => {
     const defaultChannels = ['general', 'random'];
     return !defaultChannels.includes(channel.name);
@@ -172,7 +190,6 @@ const ChatPage = () => {
             </button>
           </div>
 
-        
           <ul className="nav flex-column nav-pills nav-fill px-2 mb-3 overflow-auto h-100 d-block">
             {channels.map((channel) => (
               <li key={channel.id} className="nav-item w-100">
@@ -190,7 +207,6 @@ const ChatPage = () => {
           </ul>
         </div>
 
-        
         <div className="col p-0 d-flex flex-column h-100">
           <div className="bg-light mb-4 p-3 shadow-sm small">
             <p className="m-0">
@@ -201,22 +217,15 @@ const ChatPage = () => {
             </span>
           </div>
 
-        
+          {/* Убрали сообщение "Напишите первым!" - просто показываем сообщения */}
           <div className="chat-messages overflow-auto px-5 mb-3">
-            {currentMessages.length === 0 ? (
-              <div style={{color: '#999', textAlign: 'center', padding: '20px'}}>
-                {t('noMessagesYet')}
+            {currentMessages.map((msg) => (
+              <div key={msg.id} className="text-break mb-2">
+                <b>{msg.username}</b>: {msg.body}
               </div>
-            ) : (
-              currentMessages.map((msg) => (
-                <div key={msg.id} className="text-break mb-2">
-                  <b>{msg.username}</b>: {msg.body}
-                </div>
-              ))
-            )}
+            ))}
           </div>
 
-         
           <div className="mt-auto px-5 py-3">
             <form onSubmit={handleSend} className="py-1 border rounded-2">
               <div className="input-group has-validation">
@@ -246,7 +255,6 @@ const ChatPage = () => {
         </div>
       </div>
       
-     
       <AddChannelModal 
         show={showAddModal} 
         onHide={handleHideAddModal} 

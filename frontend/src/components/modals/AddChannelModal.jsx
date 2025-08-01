@@ -6,6 +6,7 @@ import { toast } from 'react-toastify';
 import { Formik } from 'formik';
 import * as Yup from 'yup';
 import { createChannel } from '../../slices/channelsSlice.js';
+import { containsProfanity, cleanText } from '../../services/profanityFilter.js';
 
 const AddChannelModal = ({ show, onHide }) => {
   const { t } = useTranslation();
@@ -20,6 +21,8 @@ const AddChannelModal = ({ show, onHide }) => {
       .min(3, t('channelNameLength'))
       .max(20, t('channelNameLength'))
       .notOneOf(channelNames, t('channelMustBeUnique'))
+      .test('profanity', t('channelNameContainsProfanity') || 'Название канала содержит недопустимые слова', 
+        value => !containsProfanity(value || ''))
       .required(t('requiredField')),
   });
 
@@ -33,7 +36,10 @@ const AddChannelModal = ({ show, onHide }) => {
 
   const handleSubmit = async (values, { setSubmitting }) => {
     try {
-      await dispatch(createChannel({ name: values.name.trim() })).unwrap();
+      // Дополнительная очистка имени канала
+      const cleanedName = cleanText(values.name.trim());
+      
+      await dispatch(createChannel({ name: cleanedName })).unwrap();
       toast.success(t('channelCreated'));
       onHide();
     } catch (error) {
