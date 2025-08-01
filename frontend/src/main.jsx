@@ -7,7 +7,7 @@ import store from './slices/index.js';
 import App from './App.jsx';
 import './index.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import { rollbarConfig } from './rollbar/rollbarConfig.jsx';
+import rollbarConfig from './rollbar/rollbarConfig.jsx';
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
