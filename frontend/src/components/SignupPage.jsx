@@ -99,76 +99,77 @@ const SignupPage = () => {
                     isSubmitting,
                   }) => (
                     <Form onSubmit={handleSubmit}>
-  <div className="mb-3 position-relative">
-    <FloatingLabel controlId="username" label={t('username')}>
-      <Form.Control
-        name="username"
-        autoComplete="username"
-        required
-        placeholder={t('username')}
-        value={values.username}
-        onChange={handleChange}
-        isInvalid={signupFailed || (touched.username && !!errors.username)}
-        ref={inputRef}
-      />
-    </FloatingLabel>
-    {(touched.username && errors.username) && (
-      <div className="invalid-tooltip">
-        {errors.username}
-      </div>
-    )}
-  </div>
+                      <FloatingLabel
+                        controlId="username"
+                        label={t('username')}
+                        className="mb-3 position-relative"
+                      >
+                        <Form.Control
+                          name="username"
+                          autoComplete="username"
+                          required
+                          placeholder={t('username')}
+                          value={values.username}
+                          onChange={handleChange}
+                          isInvalid={
+                            signupFailed || (touched.username && !!errors.username)
+                          }
+                          ref={inputRef}
+                        />
+                        <Form.Control.Feedback type="invalid" tooltip>
+                          {errors.username}
+                        </Form.Control.Feedback>
+                      </FloatingLabel>
 
-  <div className="mb-3 position-relative">
-    <FloatingLabel controlId="password" label={t('password')}>
-      <Form.Control
-        type="password"
-        name="password"
-        autoComplete="new-password"
-        required
-        placeholder={t('password')}
-        value={values.password}
-        onChange={handleChange}
-        isInvalid={touched.password && !!errors.password}
-      />
-    </FloatingLabel>
-    {(touched.password && errors.password) && (
-      <div className="invalid-tooltip">
-        {errors.password}
-      </div>
-    )}
-  </div>
+                      <FloatingLabel
+                        controlId="password"
+                        label={t('password')}
+                        className="mb-3 position-relative"
+                      >
+                        <Form.Control
+                          type="password"
+                          name="password"
+                          autoComplete="new-password"
+                          required
+                          placeholder={t('password')}
+                          value={values.password}
+                          onChange={handleChange}
+                          isInvalid={touched.password && !!errors.password}
+                        />
+                        <Form.Control.Feedback type="invalid" tooltip>
+                          {errors.password}
+                        </Form.Control.Feedback>
+                      </FloatingLabel>
 
-  <div className="mb-4 position-relative">
-    <FloatingLabel controlId="confirmPassword" label={t('confirmPassword')}>
-      <Form.Control
-        type="password"
-        name="confirmPassword"
-        autoComplete="new-password"
-        required
-        placeholder={t('confirmPassword')}
-        value={values.confirmPassword}
-        onChange={handleChange}
-        isInvalid={touched.confirmPassword && !!errors.confirmPassword}
-      />
-    </FloatingLabel>
-    {(touched.confirmPassword && errors.confirmPassword) && (
-      <div className="invalid-tooltip">
-        {errors.confirmPassword}
-      </div>
-    )}
-  </div>
+                      <FloatingLabel
+                        controlId="confirmPassword"
+                        label={t('confirmPassword')}
+                        className="mb-4 position-relative"
+                      >
+                        <Form.Control
+                          type="password"
+                          name="confirmPassword"
+                          autoComplete="new-password"
+                          required
+                          placeholder={t('confirmPassword')}
+                          value={values.confirmPassword}
+                          onChange={handleChange}
+                          isInvalid={touched.confirmPassword && !!errors.confirmPassword}
+                        />
+                        <Form.Control.Feedback type="invalid" tooltip>
+                          {errors.confirmPassword}
+                        </Form.Control.Feedback>
+                      </FloatingLabel>
 
-  <Button
-    type="submit"
-    disabled={isSubmitting}
-    variant="outline-primary"
-    className="w-100 mb-3"
-  >
-    {t('signupButton')}
-  </Button>
-</Form>
-
+                      <Button
+                        type="submit"
+                        disabled={isSubmitting}
+                        variant="outline-primary"
+                        className="w-100 mb-3"
+                      >
+                        {t('signupButton')}
+                      </Button>
+                    </Form>
                   )}
                 </Formik>
               </div>
