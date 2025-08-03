@@ -93,47 +93,50 @@ const SignupPage = () => {
                   {({
                     handleSubmit,
                     handleChange,
+                    handleBlur,
                     values,
                     touched,
                     errors,
                     isSubmitting,
                   }) => (
-                    <Form onSubmit={handleSubmit}>
+                    <Form onSubmit={handleSubmit} noValidate>
                       <FloatingLabel
                         controlId="username"
                         label={t('username')}
-                        className="mb-3 position-relative"
+                        className="mb-3"
                       >
                         <Form.Control
                           name="username"
                           autoComplete="username"
-                          required
                           placeholder={t('username')}
                           value={values.username}
                           onChange={handleChange}
+                          onBlur={handleBlur}
                           isInvalid={
                             signupFailed || (touched.username && !!errors.username)
                           }
                           ref={inputRef}
                         />
                         <Form.Control.Feedback type="invalid" tooltip>
-                          {errors.username}
+                          {signupFailed && !errors.username
+                            ? errorMessage
+                            : errors.username}
                         </Form.Control.Feedback>
                       </FloatingLabel>
 
                       <FloatingLabel
                         controlId="password"
                         label={t('password')}
-                        className="mb-3 position-relative"
+                        className="mb-3"
                       >
                         <Form.Control
                           type="password"
                           name="password"
                           autoComplete="new-password"
-                          required
                           placeholder={t('password')}
                           value={values.password}
                           onChange={handleChange}
+                          onBlur={handleBlur}
                           isInvalid={touched.password && !!errors.password}
                         />
                         <Form.Control.Feedback type="invalid" tooltip>
@@ -144,20 +147,22 @@ const SignupPage = () => {
                       <FloatingLabel
                         controlId="confirmPassword"
                         label={t('confirmPassword')}
-                        className="mb-4 position-relative"
+                        className="mb-4"
                       >
                         <Form.Control
                           type="password"
                           name="confirmPassword"
                           autoComplete="new-password"
-                          required
                           placeholder={t('confirmPassword')}
                           value={values.confirmPassword}
                           onChange={handleChange}
-                          isInvalid={touched.confirmPassword && !!errors.confirmPassword}
+                          onBlur={handleBlur}
+                          isInvalid={touched.confirmPassword && !!errors.confirmPassword && values.password !== values.confirmPassword}
                         />
                         <Form.Control.Feedback type="invalid" tooltip>
-                          {errors.confirmPassword}
+                          {touched.confirmPassword && errors.confirmPassword && values.password !== values.confirmPassword
+                            ? errors.confirmPassword
+                            : ''}
                         </Form.Control.Feedback>
                       </FloatingLabel>
 
