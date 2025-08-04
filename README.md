@@ -1,4 +1,6 @@
-# Многофункциональный чат с авторизацией, регистрацией, каналами и сообщениями
+# Чат
+
+Многофункциональный чат с авторизацией, регистрацией, каналами и сообщениями
 
 ### Hexlet tests and linter status:
 [![Actions Status](https://github.com/dven-dev/frontend-project-12/actions/workflows/hexlet-check.yml/badge.svg)](https://github.com/dven-dev/frontend-project-12/actions)
@@ -50,4 +52,4 @@ npx @hexlet/chat-server
 cd frontend
 npm run dev
 
-По умолчанию сервер запускается на http://localhost:5001, а фронтенд — на http://localhost:5173
+# По умолчанию сервер запускается на http://localhost:5001, а фронтенд — на http://localhost:5173
