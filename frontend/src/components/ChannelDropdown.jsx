@@ -49,7 +49,9 @@ const ChannelDropdown = ({
           }`}
           id={`dropdown-split-${channel.id}`}
           aria-label={t('channelManagement')}
-        />
+        >
+          <span className="visually-hidden">{t('channelManagement')}</span>
+        </Dropdown.Toggle>
       )}
       {(isRenamable || isRemovable) && (
         <Dropdown.Menu>
