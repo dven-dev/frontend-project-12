@@ -1,11 +1,15 @@
+install:
+	npm install && cd ./frontend/ && npm install
+
+start:
+	npx start-server -s ./frontend/dist
+
 build:
-	cd frontend && npm install && npm run build
-	
-start-frontend:
-	make -C frontend start	
+	cd ./frontend/ && npm run build
 
-start-backend:
-	npx @hexlet/chat-server --static ./frontend/dist
+#dev
+back:
+	npx start-server
 
-lint-frontend:
-	make -C frontend lint
+front:
+	cd ./frontend/ && npm run dev
