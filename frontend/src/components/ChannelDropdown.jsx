@@ -41,7 +41,6 @@ const ChannelDropdown = ({
       >
         <span># {channel.name}</span>
       </button>
-
       {(isRenamable || isRemovable) && (
         <Dropdown.Toggle
           split
@@ -49,9 +48,9 @@ const ChannelDropdown = ({
             isActive ? 'btn-secondary' : 'btn-light'
           }`}
           id={`dropdown-split-${channel.id}`}
+          aria-label={t('channelManagement')}
         />
       )}
-
       {(isRenamable || isRemovable) && (
         <Dropdown.Menu>
           {isRenamable && (

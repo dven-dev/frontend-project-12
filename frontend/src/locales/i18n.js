@@ -42,6 +42,7 @@ const resources = {
       channelMustBeUnique: 'Должно быть уникальным',
       removeChannelConfirm: 'Уверены?',
       channelNameContainsProfanity: 'Название канала содержит недопустимые слова',
+      channelManagement: 'Управление каналом',
       
       
       channelCreated: 'Канал создан',
