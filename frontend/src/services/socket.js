@@ -1,16 +1,12 @@
-// Обновите src/services/socket.js
 import { io } from 'socket.io-client';
 import { getSocketUrl } from '../services/apiUtils.js';
 
-// Создаем функцию для инициализации сокета
 const createSocket = () => {
   const token = localStorage.getItem('token');
   
   if (!token) {
-    console.warn('No token found, socket connection will be delayed');
     return null;
   }
-
   const socketUrl = getSocketUrl();
   
   const socket = io(socketUrl, {
@@ -27,19 +23,16 @@ const createSocket = () => {
   });
 
   socket.on('connect', () => {
-    console.log('Socket connected to:', socketUrl);
-    console.log('Socket ID:', socket.id);
+    // Removed console.log: console.log('Socket connected to:', socketUrl);
+    // Removed console.log: console.log('Socket ID:', socket.id);
   });
 
   socket.on('disconnect', (reason) => {
-    console.log('Socket disconnected:', reason);
+    // Socket disconnected
   });
 
   socket.on('connect_error', (error) => {
-    console.error('Socket connection error:', error);
-    
     if (error.message && error.message.includes('unauthorized')) {
-      console.log('Socket authentication failed, redirecting to login');
       localStorage.removeItem('token');
       localStorage.removeItem('username');
       window.location.href = '/login';

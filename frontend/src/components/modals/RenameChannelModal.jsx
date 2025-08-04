@@ -1,4 +1,3 @@
-// RenameChannelModal.jsx
 import React, { useRef, useEffect } from 'react';
 import { Modal, Button, Form, FloatingLabel } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
@@ -16,7 +15,7 @@ const RenameChannelModal = ({ show, onHide, channel }) => {
   const inputRef = useRef();
 
   const channelNames = channels
-    .filter(ch => ch.id !== channel?.id) // Исключаем текущий канал из проверки уникальности
+    .filter(ch => ch.id !== channel?.id)
     .map(ch => ch.name);
 
   const validationSchema = Yup.object({
@@ -31,7 +30,7 @@ const RenameChannelModal = ({ show, onHide, channel }) => {
     if (show) {
       setTimeout(() => {
         inputRef.current?.focus();
-        inputRef.current?.select(); // Выделяем текст для удобства редактирования
+        inputRef.current?.select();
       }, 100);
     }
   }, [show]);
@@ -40,7 +39,6 @@ const RenameChannelModal = ({ show, onHide, channel }) => {
     if (!channel) return;
 
     try {
-      // Очистка имени канала с заменой нецензурных слов на звездочки
       const cleanedName = cleanWithAsterisks(values.name.trim());
 
       await dispatch(renameChannel({
@@ -69,7 +67,7 @@ const RenameChannelModal = ({ show, onHide, channel }) => {
         initialValues={{ name: channel.name || '' }}
         validationSchema={validationSchema}
         onSubmit={handleSubmit}
-        enableReinitialize // Позволяет обновлять начальные значения при изменении channel
+        enableReinitialize
       >
         {({
           handleSubmit,

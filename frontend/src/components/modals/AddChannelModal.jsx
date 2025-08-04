@@ -1,4 +1,3 @@
-// AddChannelModal.jsx
 import React, { useRef, useEffect } from 'react';
 import { Modal, Button, Form, FloatingLabel } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
@@ -35,7 +34,6 @@ const AddChannelModal = ({ show, onHide }) => {
 
   const handleSubmit = async (values, { setSubmitting }) => {
     try {
-      // Очистка имени канала с заменой нецензурных слов на звездочки
       const cleanedName = cleanWithAsterisks(values.name.trim());
 
       await dispatch(createChannel({ name: cleanedName })).unwrap();

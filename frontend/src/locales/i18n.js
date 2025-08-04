@@ -4,7 +4,7 @@ import { initReactI18next } from 'react-i18next';
 const resources = {
   ru: {
     translation: {
-      // Общие
+      
       requiredField: 'Обязательное поле',
       cancel: 'Отменить',
       create: 'Создать',
@@ -12,7 +12,7 @@ const resources = {
       remove: 'Удалить',
       appName: 'Hexlet Chat',
       
-      // Авторизация
+      
       login: 'Войти',
       yourNickname: 'Ваш ник',
       password: 'Пароль',
@@ -20,7 +20,7 @@ const resources = {
       noAccount: 'Нет аккаунта?',
       registration: 'Регистрация',
       
-      // Регистрация
+      
       signup: 'Регистрация',
       signupButton: 'Зарегистрироваться',
       username: 'Имя пользователя',
@@ -32,7 +32,7 @@ const resources = {
       registrationError: 'Ошибка регистрации',
       alreadyHaveAccount: 'Уже есть аккаунт?',
       
-      // Каналы
+      
       channels: 'Каналы',
       addChannel: 'Добавить канал',
       renameChannel: 'Переименовать канал',
@@ -43,7 +43,7 @@ const resources = {
       removeChannelConfirm: 'Уверены?',
       channelNameContainsProfanity: 'Название канала содержит недопустимые слова',
       
-      // Уведомления каналов
+      
       channelCreated: 'Канал создан',
       channelRenamed: 'Канал переименован',
       channelRemoved: 'Канал удалён',
@@ -51,13 +51,13 @@ const resources = {
       channelRenameError: 'Ошибка переименования канала',
       channelRemoveError: 'Ошибка удаления канала',
       
-      // Ошибки сети
+      
       networkError: 'Ошибка соединения',
       loadingError: 'Ошибка загрузки данных',
       connectionLost: 'Соединение потеряно',
       connectionRestored: 'Соединение восстановлено',
       
-      // Сообщения
+      
       enterMessage: 'Введите сообщение...',
       sendMessage: 'Отправить',
       newMessage: 'Новое сообщение',
@@ -73,19 +73,19 @@ const resources = {
       messageSendError: 'Ошибка отправки сообщения',
       noMessagesYet: 'Напишите первым!',
       
-      // 404 страница
+      
       notFound: 'Страница не найдена',
       pageNotFound: 'Страница не найдена',
       butYouCanGoTo: 'Но вы можете перейти',
       toMainPage: 'на главную страницу',
       backToMain: 'На главную',
       
-      // Интерфейс
+      
       hexletChat: 'Hexlet Chat',
       logout: 'Выйти',
       loading: 'Загрузка...',
       
-      // Дополнительные переводы для системы фильтрации
+      
       profanityFilter: 'Фильтр нецензурных слов',
       messageFiltered: 'Сообщение было отфильтровано',
       inappropriateContent: 'Неподходящий контент',

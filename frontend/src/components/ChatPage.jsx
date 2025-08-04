@@ -1,4 +1,3 @@
-// ChatPage.jsx
 import React, { useEffect, useState, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useTranslation } from 'react-i18next';
@@ -25,17 +24,14 @@ const ChatPage = () => {
   const [showRemoveModal, setShowRemoveModal] = useState(false);
   const [selectedChannel, setSelectedChannel] = useState(null);
 
-  // Ref для поля ввода
   const messageInputRef = useRef(null);
 
-  // Устанавливаем фокус на поле ввода при загрузке компонента и когда каналы загружены
   useEffect(() => {
     if (messageInputRef.current && !channelsLoading && !messagesLoading) {
       messageInputRef.current.focus();
     }
   }, [channelsLoading, messagesLoading]);
 
-  // Также можно установить фокус при смене канала
   useEffect(() => {
     if (messageInputRef.current && currentChannelId) {
       messageInputRef.current.focus();
@@ -46,20 +42,19 @@ const ChatPage = () => {
     const socket = getSocket();
     
     if (!socket) {
-      console.warn('Socket not available - user not authenticated');
       return;
     }
 
     const handleConnect = () => {
-      console.log('Socket подключен');
+      // Removed console.log: console.log('Socket подключен');
     };
 
     const handleDisconnect = () => {
-      console.log('Socket отключен');
+      // Socket disconnected
     };
 
     const handleConnectError = (error) => {
-      console.log('Ошибка подключения:', error);
+      // Connection error occurred
     };
 
     const handleNewMessage = (message) => {
@@ -115,7 +110,6 @@ const ChatPage = () => {
       return;
     }
 
-    // Очистка текста с заменой нецензурных слов на звездочки
     const cleanedMessage = cleanWithAsterisks(newMessage.trim());
 
     const messageData = {
@@ -127,12 +121,11 @@ const ChatPage = () => {
     try {
       await dispatch(sendMessage(messageData)).unwrap();
       setNewMessage('');
-      // Возвращаем фокус на поле ввода после отправки сообщения
       if (messageInputRef.current) {
         messageInputRef.current.focus();
       }
     } catch (error) {
-      console.error('Ошибка отправки сообщения:', error);
+      // Error sending message
     }
   };
 
@@ -233,7 +226,6 @@ const ChatPage = () => {
             </span>
           </div>
 
-          {/* Убрали сообщение "Напишите первым!" - просто показываем сообщения */}
           <div className="chat-messages overflow-auto px-5 mb-3">
             {currentMessages.map((msg) => (
               <div key={msg.id} className="text-break mb-2">
