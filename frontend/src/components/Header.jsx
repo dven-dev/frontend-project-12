@@ -1,4 +1,4 @@
-import { useSelector, useDispatch } from 'react-redux
+import { useSelector, useDispatch } from 'react-redux'
 import { useTranslation } from 'react-i18next'
 import { logout } from '../slices/authSlice'
 import { useNavigate } from 'react-router-dom'
