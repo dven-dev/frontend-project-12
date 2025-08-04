@@ -1,11 +1,12 @@
-import React, { useEffect, useState } from 'react';
+// ChatPage.jsx
+import React, { useEffect, useState, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useTranslation } from 'react-i18next';
 import { toast } from 'react-toastify';
 import { fetchChannels, setCurrentChannelId, addChannel, updateChannel, removeChannel } from '../slices/channelsSlice.js';
 import { fetchMessages, addMessage, sendMessage } from '../slices/messagesSlice.js';
 import { getSocket } from '../services/socket.js';
-import { cleanText, containsProfanity } from '../services/profanityFilter.js';
+import { cleanWithAsterisks } from '../services/profanityFilter.js';
 import AddChannelModal from './modals/AddChannelModal.jsx';
 import RenameChannelModal from './modals/RenameChannelModal.jsx';
 import RemoveChannelModal from './modals/RemoveChannelModal.jsx';
@@ -23,6 +24,23 @@ const ChatPage = () => {
   const [showRenameModal, setShowRenameModal] = useState(false);
   const [showRemoveModal, setShowRemoveModal] = useState(false);
   const [selectedChannel, setSelectedChannel] = useState(null);
+
+  // Ref для поля ввода
+  const messageInputRef = useRef(null);
+
+  // Устанавливаем фокус на поле ввода при загрузке компонента и когда каналы загружены
+  useEffect(() => {
+    if (messageInputRef.current && !channelsLoading && !messagesLoading) {
+      messageInputRef.current.focus();
+    }
+  }, [channelsLoading, messagesLoading]);
+
+  // Также можно установить фокус при смене канала
+  useEffect(() => {
+    if (messageInputRef.current && currentChannelId) {
+      messageInputRef.current.focus();
+    }
+  }, [currentChannelId]);
 
   useEffect(() => {
     const socket = getSocket();
@@ -97,14 +115,8 @@ const ChatPage = () => {
       return;
     }
 
-    // Проверка на нецензурные слова
-    if (containsProfanity(newMessage.trim())) {
-      toast.error(t('messageContainsProfanity') || 'Сообщение содержит недопустимые слова');
-      return;
-    }
-
-    // Очистка текста (дополнительная мера)
-    const cleanedMessage = cleanText(newMessage.trim());
+    // Очистка текста с заменой нецензурных слов на звездочки
+    const cleanedMessage = cleanWithAsterisks(newMessage.trim());
 
     const messageData = {
       body: cleanedMessage,
@@ -115,6 +127,10 @@ const ChatPage = () => {
     try {
       await dispatch(sendMessage(messageData)).unwrap();
       setNewMessage('');
+      // Возвращаем фокус на поле ввода после отправки сообщения
+      if (messageInputRef.current) {
+        messageInputRef.current.focus();
+      }
     } catch (error) {
       console.error('Ошибка отправки сообщения:', error);
     }
@@ -230,6 +246,7 @@ const ChatPage = () => {
             <form onSubmit={handleSend} className="py-1 border rounded-2">
               <div className="input-group has-validation">
                 <input
+                  ref={messageInputRef}
                   name="body"
                   aria-label={t('enterMessage')}
                   placeholder={t('enterMessage')}

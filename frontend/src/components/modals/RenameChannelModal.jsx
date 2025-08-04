@@ -1,3 +1,4 @@
+// RenameChannelModal.jsx
 import React, { useRef, useEffect } from 'react';
 import { Modal, Button, Form, FloatingLabel } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
@@ -6,7 +7,7 @@ import { toast } from 'react-toastify';
 import { Formik } from 'formik';
 import * as Yup from 'yup';
 import { renameChannel } from '../../slices/channelsSlice.js';
-import { containsProfanity, cleanText } from '../../services/profanityFilter.js';
+import { cleanWithAsterisks } from '../../services/profanityFilter.js';
 
 const RenameChannelModal = ({ show, onHide, channel }) => {
   const { t } = useTranslation();
@@ -23,8 +24,6 @@ const RenameChannelModal = ({ show, onHide, channel }) => {
       .min(3, t('channelNameLength'))
       .max(20, t('channelNameLength'))
       .notOneOf(channelNames, t('channelMustBeUnique'))
-      .test('profanity', t('channelNameContainsProfanity'), 
-        value => !containsProfanity(value || ''))
       .required(t('requiredField')),
   });
 
@@ -39,16 +38,16 @@ const RenameChannelModal = ({ show, onHide, channel }) => {
 
   const handleSubmit = async (values, { setSubmitting }) => {
     if (!channel) return;
-    
+
     try {
-      // Дополнительная очистка имени канала
-      const cleanedName = cleanText(values.name.trim());
-      
-      await dispatch(renameChannel({ 
-        id: channel.id, 
-        name: cleanedName 
+      // Очистка имени канала с заменой нецензурных слов на звездочки
+      const cleanedName = cleanWithAsterisks(values.name.trim());
+
+      await dispatch(renameChannel({
+        id: channel.id,
+        name: cleanedName
       })).unwrap();
-      
+
       toast.success(t('channelRenamed'));
       onHide();
     } catch (error) {

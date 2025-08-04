@@ -1,3 +1,4 @@
+// AddChannelModal.jsx
 import React, { useRef, useEffect } from 'react';
 import { Modal, Button, Form, FloatingLabel } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
@@ -6,7 +7,7 @@ import { toast } from 'react-toastify';
 import { Formik } from 'formik';
 import * as Yup from 'yup';
 import { createChannel } from '../../slices/channelsSlice.js';
-import { containsProfanity, cleanText } from '../../services/profanityFilter.js';
+import { cleanWithAsterisks } from '../../services/profanityFilter.js';
 
 const AddChannelModal = ({ show, onHide }) => {
   const { t } = useTranslation();
@@ -21,8 +22,6 @@ const AddChannelModal = ({ show, onHide }) => {
       .min(3, t('channelNameLength'))
       .max(20, t('channelNameLength'))
       .notOneOf(channelNames, t('channelMustBeUnique'))
-      .test('profanity', t('channelNameContainsProfanity') || 'Название канала содержит недопустимые слова', 
-        value => !containsProfanity(value || ''))
       .required(t('requiredField')),
   });
 
@@ -36,9 +35,9 @@ const AddChannelModal = ({ show, onHide }) => {
 
   const handleSubmit = async (values, { setSubmitting }) => {
     try {
-      // Дополнительная очистка имени канала
-      const cleanedName = cleanText(values.name.trim());
-      
+      // Очистка имени канала с заменой нецензурных слов на звездочки
+      const cleanedName = cleanWithAsterisks(values.name.trim());
+
       await dispatch(createChannel({ name: cleanedName })).unwrap();
       toast.success(t('channelCreated'));
       onHide();
