@@ -1,34 +1,36 @@
-import React, { useState } from 'react';
-import { Modal, Button } from 'react-bootstrap';
-import { useDispatch } from 'react-redux';
-import { useTranslation } from 'react-i18next';
-import { toast } from 'react-toastify';
-import { deleteChannel } from '../../slices/channelsSlice.js';
+import { useState } from 'react'
+import { Modal, Button } from 'react-bootstrap'
+import { useDispatch } from 'react-redux'
+import { useTranslation } from 'react-i18next'
+import { toast } from 'react-toastify'
+import { deleteChannel } from '../../slices/channelsSlice.js'
 
 const RemoveChannelModal = ({ show, onHide, channel }) => {
-  const { t } = useTranslation();
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const dispatch = useDispatch();
+  const { t } = useTranslation()
+  const [isSubmitting, setIsSubmitting] = useState(false)
+  const dispatch = useDispatch()
 
   const handleConfirm = async () => {
-    if (!channel) return;
+    if (!channel) return
 
-    setIsSubmitting(true);
+    setIsSubmitting(true)
     try {
-      await dispatch(deleteChannel(channel.id)).unwrap();
-      toast.success(t('channelRemoved'));
-      onHide();
-    } catch (error) {
-      console.error('Ошибка удаления канала:', error);
-      toast.error(t('channelRemoveError'));
-    } finally {
-      setIsSubmitting(false);
+      await dispatch(deleteChannel(channel.id)).unwrap()
+      toast.success(t('channelRemoved'))
+      onHide()
+    } 
+    catch (error) {
+      console.error('Ошибка удаления канала:', error)
+      toast.error(t('channelRemoveError'))
+    } 
+    finally {
+      setIsSubmitting(false)
     }
-  };
+  }
 
   const handleClose = () => {
     if (!isSubmitting) {
-      onHide();
+      onHide()
     }
   };
 
@@ -41,7 +43,8 @@ const RemoveChannelModal = ({ show, onHide, channel }) => {
         <p>{t('removeChannelConfirm')}</p>
         {channel && (
           <p className="text-muted">
-            <strong>#{channel.name}</strong>
+            <strong>
+            #{channel.name}</strong>
           </p>
         )}
       </Modal.Body>
@@ -62,7 +65,7 @@ const RemoveChannelModal = ({ show, onHide, channel }) => {
         </Button>
       </Modal.Footer>
     </Modal>
-  );
-};
+  )
+}
 
-export default RemoveChannelModal;
+export default RemoveChannelModal

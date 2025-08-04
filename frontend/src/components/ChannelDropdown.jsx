@@ -1,34 +1,33 @@
-import React from 'react';
-import { Dropdown, ButtonGroup } from 'react-bootstrap';
-import { useTranslation } from 'react-i18next';
+import { Dropdown, ButtonGroup } from 'react-bootstrap'
+import { useTranslation } from 'react-i18next'
 
-const ChannelDropdown = ({ 
-  channel, 
-  onRename, 
-  onRemove, 
-  isRemovable = true, 
-  isRenamable = true, 
-  isActive = false, 
-  onSelect 
+const ChannelDropdown = ({
+  channel,
+  onRename,
+  onRemove,
+  isRemovable = true,
+  isRenamable = true,
+  isActive = false,
+  onSelect,
 }) => {
-  const { t } = useTranslation();
+  const { t } = useTranslation()
 
   const handleSelect = (e) => {
-    e.preventDefault();
-    onSelect();
-  };
+    e.preventDefault()
+    onSelect()
+  }
 
   const handleRename = (e) => {
-    e.preventDefault();
-    e.stopPropagation();
-    onRename(channel);
-  };
+    e.preventDefault()
+    e.stopPropagation()
+    onRename(channel)
+  }
 
   const handleRemove = (e) => {
-    e.preventDefault();
-    e.stopPropagation();  
-    onRemove(channel);
-  };
+    e.preventDefault()
+    e.stopPropagation()
+    onRemove(channel)
+  }
 
   return (
     <Dropdown as={ButtonGroup} className="d-flex">
@@ -39,7 +38,8 @@ const ChannelDropdown = ({
         }`}
         onClick={handleSelect}
       >
-        <span># {channel.name}</span>
+        <span>
+        # {channel.name}</span>
       </button>
       {(isRenamable || isRemovable) && (
         <Dropdown.Toggle
@@ -68,7 +68,7 @@ const ChannelDropdown = ({
         </Dropdown.Menu>
       )}
     </Dropdown>
-  );
-};
+  )
+}
 
-export default ChannelDropdown;
+export default ChannelDropdown

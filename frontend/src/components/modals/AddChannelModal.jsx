@@ -1,20 +1,20 @@
-import React, { useRef, useEffect } from 'react';
-import { Modal, Button, Form, FloatingLabel } from 'react-bootstrap';
-import { useDispatch, useSelector } from 'react-redux';
-import { useTranslation } from 'react-i18next';
-import { toast } from 'react-toastify';
-import { Formik } from 'formik';
-import * as Yup from 'yup';
-import { createChannel } from '../../slices/channelsSlice.js';
-import { cleanWithAsterisks } from '../../services/profanityFilter.js';
+import { useRef, useEffect } from 'react'
+import { Modal, Button, Form, FloatingLabel } from 'react-bootstrap'
+import { useDispatch, useSelector } from 'react-redux'
+import { useTranslation } from 'react-i18next'
+import { toast } from 'react-toastify'
+import { Formik } from 'formik'
+import * as Yup from 'yup'
+import { createChannel } from '../../slices/channelsSlice.js'
+import { cleanWithAsterisks } from '../../services/profanityFilter.js'
 
 const AddChannelModal = ({ show, onHide }) => {
-  const { t } = useTranslation();
-  const dispatch = useDispatch();
-  const { channels } = useSelector((state) => state.channels);
-  const inputRef = useRef();
+  const { t } = useTranslation()
+  const dispatch = useDispatch()
+  const { channels } = useSelector(state => state.channels)
+  const inputRef = useRef()
 
-  const channelNames = channels.map(ch => ch.name);
+  const channelNames = channels.map(ch => ch.name)
 
   const validationSchema = Yup.object({
     name: Yup.string()
@@ -22,30 +22,32 @@ const AddChannelModal = ({ show, onHide }) => {
       .max(20, t('channelNameLength'))
       .notOneOf(channelNames, t('channelMustBeUnique'))
       .required(t('requiredField')),
-  });
+  })
 
   useEffect(() => {
     if (show) {
       setTimeout(() => {
         inputRef.current?.focus();
-      }, 100);
+      }, 100)
     }
-  }, [show]);
+  }, [show])
 
   const handleSubmit = async (values, { setSubmitting }) => {
     try {
-      const cleanedName = cleanWithAsterisks(values.name.trim());
+      const cleanedName = cleanWithAsterisks(values.name.trim())
 
-      await dispatch(createChannel({ name: cleanedName })).unwrap();
-      toast.success(t('channelCreated'));
-      onHide();
-    } catch (error) {
-      console.error('Ошибка создания канала:', error);
-      toast.error(t('channelCreateError'));
-    } finally {
-      setSubmitting(false);
+      await dispatch(createChannel({ name: cleanedName })).unwrap()
+      toast.success(t('channelCreated'))
+      onHide()
+    } 
+    catch (error) {
+      console.error('Ошибка создания канала:', error)
+      toast.error(t('channelCreateError'))
+    } 
+    finally {
+      setSubmitting(false)
     }
-  };
+  }
 
   return (
     <Modal show={show} onHide={onHide} centered>
@@ -107,7 +109,7 @@ const AddChannelModal = ({ show, onHide }) => {
         )}
       </Formik>
     </Modal>
-  );
-};
+  )
+}
 
-export default AddChannelModal;
+export default AddChannelModal

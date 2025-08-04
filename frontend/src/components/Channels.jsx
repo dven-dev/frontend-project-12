@@ -1,16 +1,15 @@
-import React from 'react';
-import { useTranslation } from 'react-i18next';
+import { useTranslation } from 'react-i18next'
 
 function Channels({ channels, currentChannelId, onSelectChannel }) {
-  const { t } = useTranslation();
-  console.log('Channels render:', channels);
+  const { t } = useTranslation()
+  console.log('Channels render:', channels)
 
   return (
     <ul
       id="channels-box"
       className="nav flex-column nav-pills nav-fill px-2 mb-3 overflow-auto h-100 d-block"
     >
-      {channels.map((channel) => (
+      {channels.map(channel => (
         <li className="nav-item w-100" key={channel.id}>
           <button
             type="button"
@@ -25,7 +24,7 @@ function Channels({ channels, currentChannelId, onSelectChannel }) {
         </li>
       ))}
     </ul>
-  );
+  )
 }
 
-export default Channels;
+export default Channels

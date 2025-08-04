@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react';
+import { useRef, useState } from 'react'
 import {
   Container,
   Row,
@@ -7,24 +7,24 @@ import {
   FloatingLabel,
   Form,
   Alert,
-} from 'react-bootstrap';
-import { Formik } from 'formik';
-import * as Yup from 'yup';
-import { useTranslation } from 'react-i18next';
-import axios from 'axios';
-import { useNavigate } from 'react-router-dom';
-import { useDispatch } from 'react-redux';
-import routes from '../routes.js';
-import avatarImg from '../assets/avatar_1.jpg';
-import { loginSuccess } from '../slices/authSlice.js';
+} from 'react-bootstrap'
+import { Formik } from 'formik'
+import * as Yup from 'yup'
+import { useTranslation } from 'react-i18next'
+import axios from 'axios'
+import { useNavigate } from 'react-router-dom'
+import { useDispatch } from 'react-redux'
+import routes from '../routes.js'
+import avatarImg from '../assets/avatar_1.jpg'
+import { loginSuccess } from '../slices/authSlice.js'
 
 const SignupPage = () => {
-  const { t } = useTranslation();
-  const [signupFailed, setSignupFailed] = useState(false);
-  const [errorMessage, setErrorMessage] = useState('');
-  const inputRef = useRef(null);
-  const navigate = useNavigate();
-  const dispatch = useDispatch();
+  const { t } = useTranslation()
+  const [signupFailed, setSignupFailed] = useState(false)
+  const [errorMessage, setErrorMessage] = useState('')
+  const inputRef = useRef(null)
+  const navigate = useNavigate()
+  const dispatch = useDispatch()
 
   const validationSchema = Yup.object().shape({
     username: Yup.string()
@@ -37,35 +37,36 @@ const SignupPage = () => {
     confirmPassword: Yup.string()
       .oneOf([Yup.ref('password')], t('passwordsMustMatch'))
       .required(t('requiredField')),
-  });
+  })
 
   const handleSubmit = async (values, { setSubmitting }) => {
-    setSignupFailed(false);
-    setErrorMessage('');
-    
+    setSignupFailed(false)
+    setErrorMessage('')
     try {
-      const { confirmPassword, ...signupData } = values;
-      const response = await axios.post(routes.signupPath(), signupData);
-      const { token, username } = response.data;
+      const { confirmPassword, ...signupData } = values
+      const response = await axios.post(routes.signupPath(), signupData)
+      const { token, username } = response.data
 
-      localStorage.setItem('token', token);
-      localStorage.setItem('username', username);
+      localStorage.setItem('token', token)
+      localStorage.setItem('username', username)
 
-      dispatch(loginSuccess({ token, username }));
+      dispatch(loginSuccess({ token, username }))
 
-      navigate('/', { replace: true });
-    } catch (error) {
+      navigate('/', { replace: true })
+    } 
+    catch (error) {
       if (error.response?.status === 409) {
         setSignupFailed(true);
-        setErrorMessage(t('userAlreadyExists'));
-        inputRef.current?.select();
-      } else {
-        setSignupFailed(true);
-        setErrorMessage(t('registrationError'));
+        setErrorMessage(t('userAlreadyExists'))
+        inputRef.current?.select()
+      } 
+      else {
+        setSignupFailed(true)
+        setErrorMessage(t('registrationError'))
       }
     }
-    setSubmitting(false);
-  };
+    setSubmitting(false)
+  }
 
   return (
     <Container fluid className="h-100">
@@ -181,7 +182,7 @@ const SignupPage = () => {
         </Col>
       </Row>
     </Container>
-  );
-};
+  )
+}
 
-export default SignupPage;
+export default SignupPage

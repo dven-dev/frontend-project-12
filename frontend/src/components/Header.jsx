@@ -1,19 +1,18 @@
-import React from 'react';
-import { useSelector, useDispatch } from 'react-redux';
-import { useTranslation } from 'react-i18next';
-import { logout } from '../slices/authSlice';
-import { useNavigate } from 'react-router-dom';
+import { useSelector, useDispatch } from 'react-redux
+import { useTranslation } from 'react-i18next'
+import { logout } from '../slices/authSlice'
+import { useNavigate } from 'react-router-dom'
 
 const Header = () => {
-  const { t } = useTranslation();
-  const token = useSelector((state) => state.auth.token);
-  const dispatch = useDispatch();
-  const navigate = useNavigate();
+  const { t } = useTranslation()
+  const token = useSelector(state => state.auth.token)
+  const dispatch = useDispatch()
+  const navigate = useNavigate()
 
   const handleLogout = () => {
-    dispatch(logout());
-    navigate('/login', { replace: true });
-  };
+    dispatch(logout())
+    navigate('/login', { replace: true })
+  }
 
   return (
     <nav className="navbar navbar-expand-lg navbar-light bg-white shadow-sm">
@@ -26,7 +25,7 @@ const Header = () => {
         )}
       </div>
     </nav>
-  );
-};
+  )
+}
 
-export default Header;
+export default Header
