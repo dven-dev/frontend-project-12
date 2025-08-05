@@ -147,7 +147,6 @@ const channelsSlice = createSlice({
         state.currentChannelId = payload.id
       })
       .addCase(renameChannel.fulfilled, (state) => {
-       
       })
       .addCase(deleteChannel.fulfilled, (state) => {
       })
