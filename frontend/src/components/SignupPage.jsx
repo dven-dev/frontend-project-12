@@ -43,7 +43,7 @@ const SignupPage = () => {
     setSignupFailed(false)
     setErrorMessage('')
     try {
-      const { confirmPassword: _, ...signupData } = values
+      const { confirmPassword, ...signupData } = values
       const response = await axios.post(routes.signupPath(), signupData)
       const { token, username } = response.data
 
