@@ -42,7 +42,7 @@ const SignupPage = () => {
   useEffect(() => {
     const timer = setTimeout(() => {
       inputRef.current?.focus()
-    }, 100) 
+    }, 100)
     return () => clearTimeout(timer)
   }, [])
 
@@ -50,7 +50,7 @@ const SignupPage = () => {
     setSignupFailed(false)
     setErrorMessage('')
     try {
-      const { confirmPassword, ...signupData } = values
+      const { ...signupData } = values
       const response = await axios.post(routes.signupPath(), signupData)
       const { token, username } = response.data
 
@@ -166,11 +166,13 @@ const SignupPage = () => {
                         value={values.confirmPassword}
                         onChange={handleChange}
                         onBlur={handleBlur}
-                        isInvalid={touched.confirmPassword && !!errors.confirmPassword}
+                        isInvalid={!signupFailed && touched.confirmPassword && !!errors.confirmPassword}
                       />
-                      <Form.Control.Feedback type="invalid" tooltip>
-                        {errors.confirmPassword}
-                      </Form.Control.Feedback>
+                      {!signupFailed && (
+                        <Form.Control.Feedback type="invalid" tooltip>
+                          {errors.confirmPassword}
+                        </Form.Control.Feedback>
+                      )}
                     </FloatingLabel>
 
                     <Button
