@@ -97,11 +97,6 @@ const ChatPage = () => {
     dispatch(fetchChannels())
     dispatch(fetchMessages())
   }, [dispatch])
-  useEffect(() => {
-    if (currentChannelId) {
-      dispatch(fetchMessages())
-    }
-  }, [currentChannelId, dispatch])
 
   const handleSend = async (e) => {
     e.preventDefault()
