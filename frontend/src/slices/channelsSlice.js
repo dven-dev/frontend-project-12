@@ -10,7 +10,7 @@ export const fetchChannels = createAsyncThunk(
 
       const response = await fetch(`${getApiUrl()}/channels`, {
         headers: {
-          Authorization: `Bearer ${token}`,
+          'Authorization': `Bearer ${token}`,
         },
       })
 
@@ -32,7 +32,7 @@ export const createChannel = createAsyncThunk(
       const response = await fetch(`${getApiUrl()}/channels`, {
         method: 'POST',
         headers: {
-          Authorization: `Bearer ${token}`,
+          'Authorization': `Bearer ${token}`,
           'Content-Type': 'application/json',
         },
         body: JSON.stringify(channelData),
@@ -55,7 +55,7 @@ export const renameChannel = createAsyncThunk(
       const response = await fetch(`${getApiUrl()}/channels/${id}`, {
         method: 'PATCH',
         headers: {
-          Authorization: `Bearer ${token}`,
+          'Authorization': `Bearer ${token}`,
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({ name }),
@@ -78,7 +78,7 @@ export const deleteChannel = createAsyncThunk(
       const response = await fetch(`${getApiUrl()}/channels/${channelId}`, {
         method: 'DELETE',
         headers: {
-          Authorization: `Bearer ${token}`,
+          'Authorization': `Bearer ${token}`,
         },
       })
 
@@ -146,9 +146,9 @@ const channelsSlice = createSlice({
       .addCase(createChannel.fulfilled, (state, { payload }) => {
         state.currentChannelId = payload.id
       })
-      .addCase(renameChannel.fulfilled, (_state) => {
+      .addCase(renameChannel.fulfilled, () => {
       })
-      .addCase(deleteChannel.fulfilled, (_state) => {
+      .addCase(deleteChannel.fulfilled, () => {
       })
   },
 })
