@@ -10,7 +10,7 @@ export const fetchChannels = createAsyncThunk(
 
       const response = await fetch(`${getApiUrl()}/channels`, {
         headers: {
-          'Authorization': `Bearer ${token}`,
+          Authorization: `Bearer ${token}`,
         },
       })
 
@@ -78,7 +78,7 @@ export const deleteChannel = createAsyncThunk(
       const response = await fetch(`${getApiUrl()}/channels/${channelId}`, {
         method: 'DELETE',
         headers: {
-          'Authorization': `Bearer ${token}`,
+          Authorization: `Bearer ${token}`,
         },
       })
 
