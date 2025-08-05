@@ -56,19 +56,19 @@ const ChatPage = () => {
       // Connection error occurred
     }
 
-    const handleNewMessage = message => {
+    const handleNewMessage = (message) => {
       dispatch(addMessage(message))
     }
 
-    const handleNewChannel = channel => {
+    const handleNewChannel = (channel) => {
       dispatch(addChannel(channel))
     }
 
-    const handleRenameChannel = channel => {
+    const handleRenameChannel = (channel) => {
       dispatch(updateChannel(channel))
     }
 
-    const handleRemoveChannel = payload => {
+    const handleRemoveChannel = (payload) => {
       dispatch(removeChannel(payload))
     }
 
@@ -98,7 +98,7 @@ const ChatPage = () => {
     dispatch(fetchMessages())
   }, [dispatch])
 
-  const handleSend = async e => {
+  const handleSend = async (e) => {
     e.preventDefault()
 
     if (!newMessage.trim()) {
@@ -129,7 +129,7 @@ const ChatPage = () => {
     }
   }
 
-  const handleChannelSelect = channelId => {
+  const handleChannelSelect = (channelId) => {
     dispatch(setCurrentChannelId(channelId))
   }
 
@@ -142,7 +142,7 @@ const ChatPage = () => {
   const handleShowAddModal = () => setShowAddModal(true)
   const handleHideAddModal = () => setShowAddModal(false)
 
-  const handleShowRenameModal = channel => {
+  const handleShowRenameModal = (channel) => {
     setSelectedChannel(channel)
     setShowRenameModal(true)
   }
@@ -151,7 +151,7 @@ const ChatPage = () => {
     setSelectedChannel(null)
   }
 
-  const handleShowRemoveModal = channel => {
+  const handleShowRemoveModal = (channel) => {
     setSelectedChannel(channel)
     setShowRemoveModal(true)
   }
@@ -160,12 +160,12 @@ const ChatPage = () => {
     setSelectedChannel(null)
   }
 
-  const isChannelRemovable = channel => {
+  const isChannelRemovable = (channel) => {
     const defaultChannels = ['general', 'random']
     return !defaultChannels.includes(channel.name) && channel.removable !== false
   }
 
-  const isChannelRenamable = channel => {
+  const isChannelRenamable = (channel) => {
     const defaultChannels = ['general', 'random']
     return !defaultChannels.includes(channel.name)
   }

@@ -38,9 +38,8 @@ const ChannelDropdown = ({
         }`}
         onClick={handleSelect}
       >
-          <span>
-        # 
-        {channel.name}
+        <span>
+          # {channel.name}
         </span>
       </button>
       {(isRenamable || isRemovable) && (
