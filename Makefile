@@ -6,6 +6,6 @@ build: install
 	cd frontend && npm run build
 
 start:
-	npx @hexlet/chat-server -s ./frontend/dist
+	npx @hexlet/chat-server -s ./frontend/dist -p $${PORT:-5001}
 
 
