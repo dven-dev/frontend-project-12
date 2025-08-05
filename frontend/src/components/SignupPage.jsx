@@ -43,7 +43,7 @@ const SignupPage = () => {
     setSignupFailed(false)
     setErrorMessage('')
     try {
-      const { confirmPassword, ...signupData } = values
+      const { confirmPassword: _, ...signupData } = values
       const response = await axios.post(routes.signupPath(), signupData)
       const { token, username } = response.data
 
@@ -157,12 +157,10 @@ const SignupPage = () => {
                         value={values.confirmPassword}
                         onChange={handleChange}
                         onBlur={handleBlur}
-                        isInvalid={touched.confirmPassword && !!errors.confirmPassword && values.password !== values.confirmPassword}
+                        isInvalid={touched.confirmPassword && !!errors.confirmPassword}
                       />
                       <Form.Control.Feedback type="invalid" tooltip>
-                        {touched.confirmPassword && errors.confirmPassword && values.password !== values.confirmPassword
-                          ? errors.confirmPassword
-                          : ''}
+                        {errors.confirmPassword}
                       </Form.Control.Feedback>
                     </FloatingLabel>
 
