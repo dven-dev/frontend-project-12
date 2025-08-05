@@ -9,9 +9,9 @@ const rollbarConfig = {
       javascript: {
         code_version: '1.0.0',
         source_map_enabled: true,
-      }
-    }
-  }
-};
+      },
+    },
+  },
+}
 
-export default rollbarConfig;
+export default rollbarConfig
