@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react'
+import { useRef, useState, useEffect } from 'react'
 import {
   Container,
   Row,
@@ -39,11 +39,18 @@ const SignupPage = () => {
       .required(t('requiredField')),
   })
 
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      inputRef.current?.focus()
+    }, 100) 
+    return () => clearTimeout(timer)
+  }, [])
+
   const handleSubmit = async (values, { setSubmitting }) => {
     setSignupFailed(false)
     setErrorMessage('')
     try {
-      const { ...signupData } = values
+      const { confirmPassword, ...signupData } = values
       const response = await axios.post(routes.signupPath(), signupData)
       const { token, username } = response.data
 
@@ -137,7 +144,9 @@ const SignupPage = () => {
                         value={values.password}
                         onChange={handleChange}
                         onBlur={handleBlur}
-                        isInvalid={touched.password && !!errors.password}
+                        isInvalid={
+                          signupFailed || (touched.password && !!errors.password)
+                        }
                       />
                       <Form.Control.Feedback type="invalid" tooltip>
                         {errors.password}

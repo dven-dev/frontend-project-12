@@ -34,7 +34,6 @@ const LoginPage = () => {
     const timer = setTimeout(() => {
       inputRef.current?.focus()
     }, 100)
-    
     return () => clearTimeout(timer)
   }, [])
 
