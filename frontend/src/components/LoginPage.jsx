@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react'
+import { useRef, useState, useEffect } from 'react'
 import {
   Container,
   Row,
@@ -29,6 +29,14 @@ const LoginPage = () => {
     username: Yup.string().required(t('requiredField')),
     password: Yup.string().required(t('requiredField')),
   })
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      inputRef.current?.focus()
+    }, 100)
+    
+    return () => clearTimeout(timer)
+  }, [])
 
   const handleSubmit = async (values, { setSubmitting }) => {
     setAuthFailed(false)
