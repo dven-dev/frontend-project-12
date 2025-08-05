@@ -43,12 +43,12 @@ const LoginPage = () => {
 
       const from = location.state?.from?.pathname || '/'
       navigate(from, { replace: true })
-    } 
+    }
     catch (error) {
       if (error.response?.status === 401) {
         setAuthFailed(true)
         inputRef.current?.select()
-      } 
+      }
       else {
         throw error
       }
@@ -57,95 +57,93 @@ const LoginPage = () => {
   }
 
   return (
-    <Container className="h-100 d-flex flex-column">
-      <Row className="h-100 justify-content-center align-content-center">
-        <Col xs={12} md={10} xxl={8}>
+    <Container fluid className="h-100">
+      <Row className="justify-content-center align-content-center h-100">
+        <Col xs={12} md={8} xxl={6}>
           <div className="card shadow-sm">
             <div className="card-body row p-5">
-              <div className="col-md-6 d-flex align-items-center justify-content-center">
+              <Col xs={12} md={6} className="d-flex align-items-center justify-content-center">
                 <img src={avatarImg} alt={t('login')} className="rounded-circle" />
-              </div>
-              <div className="col-md-6 mt-3 mt-md-0">
-                <h1 className="text-center mb-4">{t('login')}</h1>
+              </Col>
+              <Formik
+                initialValues={{ username: '', password: '' }}
+                validationSchema={validationSchema}
+                onSubmit={handleSubmit}
+              >
+                {({
+                  handleSubmit,
+                  handleChange,
+                  values,
+                  touched,
+                  errors,
+                  isSubmitting,
+                }) => (
+                  <Form onSubmit={handleSubmit} className="col-12 col-md-6 mt-3 mt-md-0">
+                    <h1 className="text-center mb-4">{t('login')}</h1>
 
-                <Formik
-                  initialValues={{ username: '', password: '' }}
-                  validationSchema={validationSchema}
-                  onSubmit={handleSubmit}
-                >
-                  {({
-                    handleSubmit,
-                    handleChange,
-                    values,
-                    touched,
-                    errors,
-                    isSubmitting,
-                  }) => (
-                    <Form onSubmit={handleSubmit}>
-                      <FloatingLabel
-                        controlId="username"
-                        label={t('yourNickname')}
-                        className="mb-3"
-                      >
-                        <Form.Control
-                          name="username"
-                          autoComplete="username"
-                          required
-                          placeholder={t('yourNickname')}
-                          value={values.username}
-                          onChange={handleChange}
-                          isInvalid={
-                            authFailed || (touched.username && !!errors.username)
-                          }
-                          ref={inputRef}
-                        />
-                        <Form.Control.Feedback type="invalid">
-                          {errors.username}
-                        </Form.Control.Feedback>
-                      </FloatingLabel>
+                    <FloatingLabel
+                      controlId="username"
+                      label={t('yourNickname')}
+                      className="mb-3"
+                    >
+                      <Form.Control
+                        name="username"
+                        autoComplete="username"
+                        required
+                        placeholder={t('yourNickname')}
+                        value={values.username}
+                        onChange={handleChange}
+                        isInvalid={
+                          authFailed || (touched.username && !!errors.username)
+                        }
+                        ref={inputRef}
+                      />
+                      <Form.Control.Feedback type="invalid">
+                        {errors.username}
+                      </Form.Control.Feedback>
+                    </FloatingLabel>
 
-                      <FloatingLabel
-                        controlId="password"
-                        label={t('password')}
-                        className="mb-3"
-                      >
-                        <Form.Control
-                          type="password"
-                          name="password"
-                          autoComplete="current-password"
-                          required
-                          placeholder={t('password')}
-                          value={values.password}
-                          onChange={handleChange}
-                          isInvalid={
-                            authFailed || (touched.password && !!errors.password)
-                          }
-                        />
-                        <Form.Control.Feedback type="invalid" tooltip>
-                          {authFailed
-                            ? t('wrongCredentials')
-                            : errors.password}
-                        </Form.Control.Feedback>
-                      </FloatingLabel>
+                    <FloatingLabel
+                      controlId="password"
+                      label={t('password')}
+                      className="mb-4"
+                    >
+                      <Form.Control
+                        type="password"
+                        name="password"
+                        autoComplete="current-password"
+                        required
+                        placeholder={t('password')}
+                        value={values.password}
+                        onChange={handleChange}
+                        isInvalid={
+                          authFailed || (touched.password && !!errors.password)
+                        }
+                      />
+                      <Form.Control.Feedback type="invalid" tooltip>
+                        {authFailed
+                          ? t('wrongCredentials')
+                          : errors.password}
+                      </Form.Control.Feedback>
+                    </FloatingLabel>
 
-                      <Button
-                        type="submit"
-                        disabled={isSubmitting}
-                        variant="outline-primary"
-                        className="w-100 mb-3"
-                      >
-                        {t('login')}
-                      </Button>
-                    </Form>
-                  )}
-                </Formik>
-              </div>
+                    <Button
+                      type="submit"
+                      disabled={isSubmitting}
+                      variant="outline-primary"
+                      className="w-100 mb-3"
+                    >
+                      {t('login')}
+                    </Button>
+                  </Form>
+                )}
+              </Formik>
             </div>
-            <div className="card-footer p-4 text-center">
-              <span>
-              {t('noAccount')} 
-              </span>
-              <a href="/signup">{t('registration')}</a>
+            <div className="card-footer p-4">
+              <div className="text-center">
+                <span>{t('noAccount')}</span>{' '}
+                <a href="/signup">{t('registration')}</a>
+              </div>
             </div>
           </div>
         </Col>
