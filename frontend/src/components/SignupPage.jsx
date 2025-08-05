@@ -166,13 +166,10 @@ const SignupPage = () => {
                         value={values.confirmPassword}
                         onChange={handleChange}
                         onBlur={handleBlur}
-                        isInvalid={!signupFailed && touched.confirmPassword && !!errors.confirmPassword}
                       />
-                      {!signupFailed && (
-                        <Form.Control.Feedback type="invalid" tooltip>
-                          {errors.confirmPassword}
-                        </Form.Control.Feedback>
-                      )}
+                      <Form.Control.Feedback type="invalid" tooltip>
+                        {errors.confirmPassword}
+                      </Form.Control.Feedback>
                     </FloatingLabel>
 
                     <Button
