@@ -28,7 +28,7 @@ export const fetchMessages = createAsyncThunk(
 
       if (!response.ok) {
         throw new Error(`Failed to fetch messages: ${response.status} ${response.statusText}`)
-      }  
+      }
       const data = await response.json()
       return Array.isArray(data) ? data : data.messages || []
     }

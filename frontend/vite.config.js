@@ -10,13 +10,13 @@ export default defineConfig({
         target: 'http://localhost:5001',
         changeOrigin: true,
         secure: false,
-        rewrite: (path) => path,
+        rewrite: path => path,
       },
       '/socket.io': {
         target: 'http://localhost:5001',
         changeOrigin: true,
         ws: true, // важно для WebSocket
-      }
-    }
-  }
+      },
+    },
+  },
 })

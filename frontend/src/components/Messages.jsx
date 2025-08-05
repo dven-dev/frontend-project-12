@@ -9,17 +9,21 @@ const Messages = ({ messages = [] }) => {
       className="chat-messages overflow-auto px-5"
       style={{ flexGrow: 1 }}
     >
-      {messages.length === 0 ? (
-        <div className="text-muted text-center mt-4">
-          {t('noMessages')}
-        </div>
-      ) : (
-        messages.map(({ id, username, body }) => (
-          <div key={id} className="text-break mb-2">
-            <b>{username}</b>: <span>{body}</span>
+      {messages.length === 0
+        ? (
+          <div className="text-muted text-center mt-4">
+            {t('noMessages')}
           </div>
-        ))
-      )}
+        )
+        : (
+          messages.map(({ id, username, body }) => (
+            <div key={id} className="text-break mb-2">
+              <b>{username}</b>
+              :
+              <span>{body}</span>
+            </div>
+          ))
+        )}
     </div>
   )
 }
