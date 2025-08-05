@@ -25,6 +25,8 @@ export default defineConfig([
     rules: {
       'no-unused-vars': ['error', { varsIgnorePattern: '^[A-Z_]' }],
       '@stylistic/quote-props': 'off',
+      '@stylistic/js/quote-props': 'off',
+      'quote-props': 'off',
     },
   },
 ])
