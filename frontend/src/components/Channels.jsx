@@ -1,5 +1,3 @@
-import React from 'react'
-
 function Channels({ channels, currentChannelId, onSelectChannel }) {
   console.log('Channels render:', channels)
   return (
