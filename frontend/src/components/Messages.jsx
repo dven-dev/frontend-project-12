@@ -10,8 +10,7 @@ const Messages = ({ messages = [] }) => {
       style={{ flexGrow: 1 }}
     >
       {messages.length === 0
-        ?
-          (
+        ? (
         <div className="text-muted text-center mt-4">
           {t('noMessages')}
         </div>

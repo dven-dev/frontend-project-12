@@ -43,10 +43,10 @@ const RemoveChannelModal = ({ show, onHide, channel }) => {
         <p>{t('removeChannelConfirm')}</p>
         {channel && (
           <p className="text-muted">
-              <strong>
+            <strong>
             #
-            {channel.name}
-              </strong>
+              {channel.name}
+            </strong>
           </p>
         )}
       </Modal.Body>
