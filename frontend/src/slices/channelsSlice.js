@@ -17,11 +17,11 @@ export const fetchChannels = createAsyncThunk(
       if (!response.ok) throw new Error('Failed to fetch channels')
       const data = await response.json()
       return Array.isArray(data) ? data : data.channels || []
-    } 
+    }
     catch (error) {
       return rejectWithValue(error.message)
     }
-  }
+  },
 )
 
 export const createChannel = createAsyncThunk(
@@ -39,13 +39,12 @@ export const createChannel = createAsyncThunk(
       })
 
       if (!response.ok) throw new Error('Failed to create channel')
-      
-      return await response.json();
-    } 
-    catch (error) {
-      return rejectWithValue(error.message);
+      return await response.json()
     }
-  }
+    catch (error) {
+      return rejectWithValue(error.message)
+    }
+  },
 )
 
 export const renameChannel = createAsyncThunk(
@@ -64,11 +63,11 @@ export const renameChannel = createAsyncThunk(
 
       if (!response.ok) throw new Error('Failed to rename channel')
       return await response.json()
-    } 
+    }
     catch (error) {
       return rejectWithValue(error.message)
     }
-  }
+  },
 )
 
 export const deleteChannel = createAsyncThunk(
@@ -85,10 +84,11 @@ export const deleteChannel = createAsyncThunk(
 
       if (!response.ok) throw new Error('Failed to delete channel')
       return { id: channelId }
-    } catch (error) {
+    }
+    catch (error) {
       return rejectWithValue(error.message)
     }
-  }
+  },
 )
 
 const initialState = {
@@ -118,11 +118,10 @@ const channelsSlice = createSlice({
       }
     },
     removeChannel: (state, { payload }) => {
-      state.channels = state.channels.filter(ch => ch.id !== payload.id);
+      state.channels = state.channels.filter(ch => ch.id !== payload.id)
       if (state.currentChannelId === payload.id) {
-    
         const generalChannel = state.channels.find(ch => ch.name === 'general')
-        state.currentChannelId = generalChannel?.id || state.channels[0]?.id || null;
+        state.currentChannelId = generalChannel?.id || state.channels[0]?.id || null
       }
     },
   },
@@ -135,7 +134,6 @@ const channelsSlice = createSlice({
       .addCase(fetchChannels.fulfilled, (state, { payload }) => {
         state.loading = false
         state.channels = payload
-        
         if (!state.currentChannelId && payload.length > 0) {
           const generalChannel = payload.find(ch => ch.name === 'general')
           state.currentChannelId = generalChannel?.id || payload[0].id
@@ -160,7 +158,7 @@ export const {
   setCurrentChannelId,
   addChannel,
   updateChannel,
-  removeChannel
+  removeChannel,
 } = channelsSlice.actions
 
 export default channelsSlice.reducer

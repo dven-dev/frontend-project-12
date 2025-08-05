@@ -28,16 +28,15 @@ export const fetchMessages = createAsyncThunk(
 
       if (!response.ok) {
         throw new Error(`Failed to fetch messages: ${response.status} ${response.statusText}`)
-      }
-      
-      const data = await response.json();
+      }     
+      const data = await response.json()
       return Array.isArray(data) ? data : data.messages || []
-    } 
+    }
     catch (error) {
       console.error('Fetch messages error:', error)
       return rejectWithValue(error.message)
     }
-  }
+  },
 )
 
 export const sendMessage = createAsyncThunk(
@@ -48,7 +47,6 @@ export const sendMessage = createAsyncThunk(
       if (!token) {
         throw new Error('No authentication token')
       }
-      
       const response = await fetch(`${getApiUrl()}/messages`, {
         method: 'POST',
         headers: {
@@ -69,15 +67,14 @@ export const sendMessage = createAsyncThunk(
         const errorText = await response.text()
         throw new Error(`HTTP ${response.status}: ${errorText}`)
       }
-      
       const result = await response.json()
       return result
-    } 
+    }
     catch (error) {
       console.error('Send message error:', error)
       return rejectWithValue(error.message)
     }
-  }
+  },
 )
 
 const initialState = {
@@ -133,10 +130,10 @@ const messagesSlice = createSlice({
       })
       .addCase(sendMessage.rejected, (state, { payload }) => {
         state.sending = false;
-        state.error = payload;
+        state.error = payload
       })
       .addCase(removeChannel, (state, { payload }) => {
-        state.messages = state.messages.filter(msg => msg.channelId !== payload.id);
+        state.messages = state.messages.filter(msg => msg.channelId !== payload.id)
       })
   },
 })
@@ -145,7 +142,7 @@ export const {
   addMessage,
   updateMessage,
   removeMessage,
-  clearMessages
+  clearMessages,
 } = messagesSlice.actions
 
 export default messagesSlice.reducer
