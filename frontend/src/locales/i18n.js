@@ -84,7 +84,6 @@ i18n
     interpolation: {
       escapeValue: false,
     },
-    
     pluralSeparator: '_',
     contextSeparator: '_',
   })

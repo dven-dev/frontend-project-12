@@ -7,9 +7,8 @@ const createSocket = () => {
     return null
   }
   const socketUrl = getSocketUrl()
-  
   const socket = io(socketUrl, {
-    transports: ['websocket', 'polling'], 
+    transports: ['websocket', 'polling'],
     auth: {
       token,
     },
@@ -26,7 +25,7 @@ const createSocket = () => {
     // Removed console.log: console.log('Socket ID:', socket.id);
   })
 
-  socket.on('disconnect', (reason) => {
+  socket.on('disconnect', () => {
     // Socket disconnected
   })
 
