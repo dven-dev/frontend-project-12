@@ -18,11 +18,11 @@ const RemoveChannelModal = ({ show, onHide, channel }) => {
       await dispatch(deleteChannel(channel.id)).unwrap()
       toast.success(t('channelRemoved'))
       onHide()
-    } 
+    }
     catch (error) {
       console.error('Ошибка удаления канала:', error)
       toast.error(t('channelRemoveError'))
-    } 
+    }
     finally {
       setIsSubmitting(false)
     }
@@ -32,7 +32,7 @@ const RemoveChannelModal = ({ show, onHide, channel }) => {
     if (!isSubmitting) {
       onHide()
     }
-  };
+  }
 
   return (
     <Modal show={show} onHide={handleClose} centered>
@@ -43,8 +43,10 @@ const RemoveChannelModal = ({ show, onHide, channel }) => {
         <p>{t('removeChannelConfirm')}</p>
         {channel && (
           <p className="text-muted">
-            <strong>
-            #{channel.name}</strong>
+              <strong>
+            #
+            {channel.name}
+            </strong>
           </p>
         )}
       </Modal.Body>

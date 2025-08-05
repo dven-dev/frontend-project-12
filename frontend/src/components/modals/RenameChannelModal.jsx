@@ -1,22 +1,22 @@
-import React, { useRef, useEffect } from 'react';
-import { Modal, Button, Form, FloatingLabel } from 'react-bootstrap';
-import { useDispatch, useSelector } from 'react-redux';
-import { useTranslation } from 'react-i18next';
-import { toast } from 'react-toastify';
-import { Formik } from 'formik';
-import * as Yup from 'yup';
-import { renameChannel } from '../../slices/channelsSlice.js';
-import { cleanWithAsterisks } from '../../services/profanityFilter.js';
+import React, { useRef, useEffect } from 'react'
+import { Modal, Button, Form, FloatingLabel } from 'react-bootstrap'
+import { useDispatch, useSelector } from 'react-redux'
+import { useTranslation } from 'react-i18next'
+import { toast } from 'react-toastify'
+import { Formik } from 'formik'
+import * as Yup from 'yup'
+import { renameChannel } from '../../slices/channelsSlice.js'
+import { cleanWithAsterisks } from '../../services/profanityFilter.js'
 
 const RenameChannelModal = ({ show, onHide, channel }) => {
-  const { t } = useTranslation();
-  const dispatch = useDispatch();
-  const { channels } = useSelector((state) => state.channels);
-  const inputRef = useRef();
+  const { t } = useTranslation()
+  const dispatch = useDispatch()
+  const { channels } = useSelector(state => state.channels)
+  const inputRef = useRef()
 
   const channelNames = channels
     .filter(ch => ch.id !== channel?.id)
-    .map(ch => ch.name);
+    .map(ch => ch.name)
 
   const validationSchema = Yup.object({
     name: Yup.string()
@@ -24,39 +24,41 @@ const RenameChannelModal = ({ show, onHide, channel }) => {
       .max(20, t('channelNameLength'))
       .notOneOf(channelNames, t('channelMustBeUnique'))
       .required(t('requiredField')),
-  });
+  })
 
   useEffect(() => {
     if (show) {
       setTimeout(() => {
-        inputRef.current?.focus();
-        inputRef.current?.select();
-      }, 100);
+        inputRef.current?.focus()
+        inputRef.current?.select()
+      }, 100)
     }
-  }, [show]);
+  }, [show])
 
   const handleSubmit = async (values, { setSubmitting }) => {
-    if (!channel) return;
+    if (!channel) return
 
     try {
-      const cleanedName = cleanWithAsterisks(values.name.trim());
+      const cleanedName = cleanWithAsterisks(values.name.trim())
 
       await dispatch(renameChannel({
         id: channel.id,
-        name: cleanedName
-      })).unwrap();
+        name: cleanedName,
+      })).unwrap()
 
-      toast.success(t('channelRenamed'));
-      onHide();
-    } catch (error) {
-      console.error('Ошибка переименования канала:', error);
-      toast.error(t('channelRenameError'));
-    } finally {
-      setSubmitting(false);
+      toast.success(t('channelRenamed'))
+      onHide()
     }
-  };
+    catch (error) {
+      console.error('Ошибка переименования канала:', error)
+      toast.error(t('channelRenameError'));
+    }
+    finally {
+      setSubmitting(false)
+    }
+  }
 
-  if (!channel) return null;
+  if (!channel) return null
 
   return (
     <Modal show={show} onHide={onHide} centered>
@@ -119,7 +121,7 @@ const RenameChannelModal = ({ show, onHide, channel }) => {
         )}
       </Formik>
     </Modal>
-  );
-};
+  )
+}
 
-export default RenameChannelModal;
+export default RenameChannelModal

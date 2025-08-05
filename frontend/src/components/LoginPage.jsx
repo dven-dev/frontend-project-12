@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react';
+import React, { useRef, useState } from 'react'
 import {
   Container,
   Row,
@@ -6,53 +6,55 @@ import {
   Button,
   FloatingLabel,
   Form,
-} from 'react-bootstrap';
-import { Formik } from 'formik';
-import * as Yup from 'yup';
-import { useTranslation } from 'react-i18next';
-import axios from 'axios';
-import { useNavigate, useLocation } from 'react-router-dom';
-import { useDispatch } from 'react-redux';
-import routes from '../routes.js';
-import avatarImg from '../assets/avatar.jpg';
-import { loginSuccess } from '../slices/authSlice.js';
+} from 'react-bootstrap'
+import { Formik } from 'formik'
+import * as Yup from 'yup'
+import { useTranslation } from 'react-i18next'
+import axios from 'axios'
+import { useNavigate, useLocation } from 'react-router-dom'
+import { useDispatch } from 'react-redux'
+import routes from '../routes.js'
+import avatarImg from '../assets/avatar.jpg'
+import { loginSuccess } from '../slices/authSlice.js'
 
 const LoginPage = () => {
-  const { t } = useTranslation();
-  const [authFailed, setAuthFailed] = useState(false);
-  const inputRef = useRef(null);
-  const navigate = useNavigate();
-  const location = useLocation();
-  const dispatch = useDispatch();
+  const { t } = useTranslation()
+  const [authFailed, setAuthFailed] = useState(false)
+  const inputRef = useRef(null)
+  const navigate = useNavigate()
+  const location = useLocation()
+  const dispatch = useDispatch()
 
   const validationSchema = Yup.object().shape({
     username: Yup.string().required(t('requiredField')),
     password: Yup.string().required(t('requiredField')),
-  });
+  })
 
   const handleSubmit = async (values, { setSubmitting }) => {
-    setAuthFailed(false);
+    setAuthFailed(false)
     try {
-      const response = await axios.post(routes.loginPath(), values);
-      const { token, username } = response.data;
+      const response = await axios.post(routes.loginPath(), values)
+      const { token, username } = response.data
 
-      localStorage.setItem('token', token);
-      localStorage.setItem('username', username);
+      localStorage.setItem('token', token)
+      localStorage.setItem('username', username)
 
-      dispatch(loginSuccess({ token, username }));
+      dispatch(loginSuccess({ token, username }))
 
-      const from = location.state?.from?.pathname || '/';
-      navigate(from, { replace: true });
-    } catch (error) {
+      const from = location.state?.from?.pathname || '/'
+      navigate(from, { replace: true })
+    } 
+    catch (error) {
       if (error.response?.status === 401) {
-        setAuthFailed(true);
-        inputRef.current?.select();
-      } else {
-        throw error;
+        setAuthFailed(true)
+        inputRef.current?.select()
+      } 
+      else {
+        throw error
       }
     }
-    setSubmitting(false);
-  };
+    setSubmitting(false)
+  }
 
   return (
     <Container className="h-100 d-flex flex-column">
@@ -140,14 +142,16 @@ const LoginPage = () => {
               </div>
             </div>
             <div className="card-footer p-4 text-center">
-              <span>{t('noAccount')} </span>
+              <span>
+              {t('noAccount')} 
+              </span>
               <a href="/signup">{t('registration')}</a>
             </div>
           </div>
         </Col>
       </Row>
     </Container>
-  );
-};
+  )
+}
 
-export default LoginPage;
+export default LoginPage

@@ -27,7 +27,7 @@ const AddChannelModal = ({ show, onHide }) => {
   useEffect(() => {
     if (show) {
       setTimeout(() => {
-        inputRef.current?.focus();
+        inputRef.current?.focus()
       }, 100)
     }
   }, [show])
@@ -39,11 +39,11 @@ const AddChannelModal = ({ show, onHide }) => {
       await dispatch(createChannel({ name: cleanedName })).unwrap()
       toast.success(t('channelCreated'))
       onHide()
-    } 
+    }
     catch (error) {
       console.error('Ошибка создания канала:', error)
       toast.error(t('channelCreateError'))
-    } 
+    }
     finally {
       setSubmitting(false)
     }
