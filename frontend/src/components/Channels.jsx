@@ -1,9 +1,7 @@
-import { useTranslation } from 'react-i18next'
+import React from 'react'
 
 function Channels({ channels, currentChannelId, onSelectChannel }) {
-  const { t } = useTranslation()
   console.log('Channels render:', channels)
-
   return (
     <ul
       id="channels-box"
