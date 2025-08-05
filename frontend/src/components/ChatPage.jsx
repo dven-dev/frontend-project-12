@@ -123,7 +123,7 @@ const ChatPage = () => {
         messageInputRef.current.focus();
       }
     } catch (error) {
-      // Error sending message }
+      toast.error(t('errors.sendingFailed'))
   }
 
   const handleChannelSelect = (channelId) => {
