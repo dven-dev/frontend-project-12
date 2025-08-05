@@ -51,7 +51,7 @@ const RenameChannelModal = ({ show, onHide, channel }) => {
     }
     catch (error) {
       console.error('Ошибка переименования канала:', error)
-      toast.error(t('channelRenameError'));
+      toast.error(t('channelRenameError'))
     }
     finally {
       setSubmitting(false)

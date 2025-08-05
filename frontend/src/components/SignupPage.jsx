@@ -53,13 +53,13 @@ const SignupPage = () => {
       dispatch(loginSuccess({ token, username }))
 
       navigate('/', { replace: true })
-    } 
+    }
     catch (error) {
       if (error.response?.status === 409) {
-        setSignupFailed(true);
+        setSignupFailed(true)
         setErrorMessage(t('userAlreadyExists'))
         inputRef.current?.select()
-      } 
+      }
       else {
         setSignupFailed(true)
         setErrorMessage(t('registrationError'))

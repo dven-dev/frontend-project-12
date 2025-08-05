@@ -46,7 +46,7 @@ const RemoveChannelModal = ({ show, onHide, channel }) => {
               <strong>
             #
             {channel.name}
-            </strong>
+              </strong>
           </p>
         )}
       </Modal.Body>
