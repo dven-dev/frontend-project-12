@@ -14,7 +14,7 @@ export const fetchMessages = createAsyncThunk(
       const response = await fetch(`${getApiUrl()}/messages`, {
         method: 'GET',
         headers: {
-          'Authorization': `Bearer ${token}`,
+          Authorization: `Bearer ${token}`,
           'Content-Type': 'application/json',
         },
       })
@@ -50,7 +50,7 @@ export const sendMessage = createAsyncThunk(
       const response = await fetch(`${getApiUrl()}/messages`, {
         method: 'POST',
         headers: {
-          'Authorization': `Bearer ${token}`,
+          Authorization: `Bearer ${token}`,
           'Content-Type': 'application/json',
         },
         body: JSON.stringify(messageData),
