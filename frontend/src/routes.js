@@ -1,10 +1,11 @@
-import { getApiUrl } from './services/apiUtils.js'
-
+// routes.js - теперь возвращаем относительные пути
+// поскольку baseURL уже настроен в axiosConfig.js
 const routes = {
-  loginPath: () => `${getApiUrl()}/login`,
-  signupPath: () => `${getApiUrl()}/signup`,
-  channelsPath: () => `${getApiUrl()}/channels`,
-  messagesPath: () => `${getApiUrl()}/messages`,
+  loginPath: () => '/login',
+  signupPath: () => '/signup',
+  dataPath: () => '/data', // получение всех данных сразу
+  channelsPath: () => '/channels', // REST API для каналов
+  messagesPath: () => '/messages', // REST API для сообщений
 }
 
 export default routes

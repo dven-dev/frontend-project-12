@@ -11,8 +11,9 @@ import { Formik } from 'formik'
 import * as Yup from 'yup'
 import { useTranslation } from 'react-i18next'
 import axios from 'axios'
-import { useNavigate, useLocation } from 'react-router-dom'
+import { useNavigate, useLocation, Link } from 'react-router-dom'
 import { useDispatch } from 'react-redux'
+import api from '../services/axiosConfig.js'
 import routes from '../routes.js'
 import avatarImg from '../assets/avatar.jpg'
 import { loginSuccess } from '../slices/authSlice.js'
@@ -40,7 +41,7 @@ const LoginPage = () => {
   const handleSubmit = async (values, { setSubmitting }) => {
     setAuthFailed(false)
     try {
-      const response = await axios.post(routes.loginPath(), values)
+      const response = await api.post(routes.loginPath(), values)
       const { token, username } = response.data
 
       localStorage.setItem('token', token)
@@ -95,7 +96,7 @@ const LoginPage = () => {
                     >
                       <Form.Control
                         name="username"
-                        autoComplete="username"
+                        autoComplete="off"
                         required
                         placeholder={t('yourNickname')}
                         value={values.username}
@@ -118,7 +119,7 @@ const LoginPage = () => {
                       <Form.Control
                         type="password"
                         name="password"
-                        autoComplete="current-password"
+                        autoComplete="off"
                         required
                         placeholder={t('password')}
                         value={values.password}
@@ -150,7 +151,7 @@ const LoginPage = () => {
               <div className="text-center">
                 <span>{t('noAccount')}</span>
                 {' '}
-                <a href="/signup">{t('registration')}</a>
+                <Link to="/signup">{t('registration')}</Link>
               </div>
             </div>
           </div>

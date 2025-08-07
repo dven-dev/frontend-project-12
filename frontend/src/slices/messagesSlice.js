@@ -1,40 +1,18 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
 import { removeChannel } from './channelsSlice.js'
-import { getApiUrl } from '../services/apiUtils.js'
+import api from '../services/axiosConfig.js'
+import routes from '../routes.js'
 
 export const fetchMessages = createAsyncThunk(
   'messages/fetchMessages',
   async (_, { rejectWithValue }) => {
     try {
-      const token = localStorage.getItem('token')
-      if (!token) {
-        throw new Error('No authentication token')
-      }
-
-      const response = await fetch(`${getApiUrl()}/messages`, {
-        method: 'GET',
-        headers: {
-          'Authorization': `Bearer ${token}`,
-          'Content-Type': 'application/json',
-        },
-      })
-
-      if (response.status === 401) {
-        localStorage.removeItem('token')
-        localStorage.removeItem('username')
-        window.location.href = '/login'
-        throw new Error('Unauthorized - please login again')
-      }
-
-      if (!response.ok) {
-        throw new Error(`Failed to fetch messages: ${response.status} ${response.statusText}`)
-      }
-      const data = await response.json()
-      return Array.isArray(data) ? data : data.messages || []
+      const response = await api.get(routes.messagesPath())
+      return Array.isArray(response.data) ? response.data : []
     }
     catch (error) {
       console.error('Fetch messages error:', error)
-      return rejectWithValue(error.message)
+      return rejectWithValue(error.response?.data || error.message)
     }
   },
 )
@@ -43,36 +21,38 @@ export const sendMessage = createAsyncThunk(
   'messages/sendMessage',
   async (messageData, { rejectWithValue }) => {
     try {
-      const token = localStorage.getItem('token')
-      if (!token) {
-        throw new Error('No authentication token')
-      }
-      const response = await fetch(`${getApiUrl()}/messages`, {
-        method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${token}`,
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(messageData),
-      })
-
-      if (response.status === 401) {
-        localStorage.removeItem('token')
-        localStorage.removeItem('username')
-        window.location.href = '/login'
-        throw new Error('Unauthorized - please login again')
-      }
-
-      if (!response.ok) {
-        const errorText = await response.text()
-        throw new Error(`HTTP ${response.status}: ${errorText}`)
-      }
-      const result = await response.json()
-      return result
+      const response = await api.post(routes.messagesPath(), messageData)
+      return response.data
     }
     catch (error) {
       console.error('Send message error:', error)
-      return rejectWithValue(error.message)
+      return rejectWithValue(error.response?.data || error.message)
+    }
+  },
+)
+
+export const editMessage = createAsyncThunk(
+  'messages/editMessage',
+  async ({ id, body }, { rejectWithValue }) => {
+    try {
+      const response = await api.patch(`${routes.messagesPath()}/${id}`, { body })
+      return response.data
+    }
+    catch (error) {
+      return rejectWithValue(error.response?.data || error.message)
+    }
+  },
+)
+
+export const deleteMessage = createAsyncThunk(
+  'messages/deleteMessage',
+  async (messageId, { rejectWithValue }) => {
+    try {
+      await api.delete(`${routes.messagesPath()}/${messageId}`)
+      return { id: messageId }
+    }
+    catch (error) {
+      return rejectWithValue(error.response?.data || error.message)
     }
   },
 )

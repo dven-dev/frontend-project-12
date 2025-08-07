@@ -24,6 +24,7 @@ const ChatPage = () => {
   const [selectedChannel, setSelectedChannel] = useState(null)
 
   const messageInputRef = useRef(null)
+  const messagesEndRef = useRef(null)
 
   useEffect(() => {
     if (messageInputRef.current && !channelsLoading && !messagesLoading) {
@@ -36,6 +37,16 @@ const ChatPage = () => {
       messageInputRef.current.focus()
     }
   }, [currentChannelId])
+
+  const currentMessages = messages.filter(msg =>
+    String(msg.channelId) === String(currentChannelId),
+  )
+
+  useEffect(() => {
+    if (messagesEndRef.current) {
+      messagesEndRef.current.scrollIntoView({ behavior: 'smooth' })
+    }
+  }, [currentMessages])
 
   useEffect(() => {
     const socket = getSocket()
@@ -133,10 +144,6 @@ const ChatPage = () => {
     dispatch(setCurrentChannelId(channelId))
   }
 
-  const currentMessages = messages.filter(msg =>
-    String(msg.channelId) === String(currentChannelId),
-  )
-
   const currentChannel = channels.find(ch => ch.id === currentChannelId)
 
   const handleShowAddModal = () => setShowAddModal(true)
@@ -230,7 +237,7 @@ const ChatPage = () => {
             </span>
           </div>
 
-          <div className="chat-messages overflow-auto px-5 mb-3">
+          <div className="overflow-auto px-5 mb-3 flex-grow-1">
             {currentMessages.map(msg => (
               <div key={msg.id} className="text-break mb-2">
                 <b>{msg.username}</b>
@@ -239,6 +246,7 @@ const ChatPage = () => {
                 {msg.body}
               </div>
             ))}
+            <div ref={messagesEndRef} />
           </div>
 
           <div className="mt-auto px-5 py-3">

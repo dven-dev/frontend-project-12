@@ -1,12 +1,20 @@
 import { useTranslation } from 'react-i18next'
+import { useEffect, useRef } from 'react'
 
 const Messages = ({ messages = [] }) => {
   const { t } = useTranslation()
+  const messagesEndRef = useRef(null)
+
+  useEffect(() => {
+    if (messagesEndRef.current) {
+      messagesEndRef.current.scrollIntoView({ behavior: 'smooth' })
+    }
+  }, [messages])
+
   return (
     <div
       id="messages-box"
-      className="chat-messages overflow-auto px-5"
-      style={{ flexGrow: 1 }}
+      className="overflow-auto px-5 flex-grow-1"
     >
       {messages.length === 0
         ? (
@@ -24,6 +32,7 @@ const Messages = ({ messages = [] }) => {
               </div>
             ))
           )}
+      <div ref={messagesEndRef} />
     </div>
   )
 }

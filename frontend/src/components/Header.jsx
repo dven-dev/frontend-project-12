@@ -1,7 +1,7 @@
 import { useSelector, useDispatch } from 'react-redux'
 import { useTranslation } from 'react-i18next'
 import { logout } from '../slices/authSlice'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, Link } from 'react-router-dom'
 
 const Header = () => {
   const { t } = useTranslation()
@@ -17,7 +17,7 @@ const Header = () => {
   return (
     <nav className="navbar navbar-expand-lg navbar-light bg-white shadow-sm">
       <div className="container d-flex justify-content-between align-items-center">
-        <a className="navbar-brand" href="/">Hexlet Chat</a>
+        <Link className="navbar-brand" to="/">Hexlet Chat</Link>
         {token && (
           <button type="button" className="btn btn-primary" onClick={handleLogout}>
             {t('logout')}

@@ -1,18 +1,16 @@
 import { createAsyncThunk } from '@reduxjs/toolkit'
-import axios from 'axios'
+import api from './axiosConfig.js'
+import routes from '../routes.js'
 
 export const fetchChannels = createAsyncThunk(
   'channels/fetchChannels',
   async (_, { rejectWithValue }) => {
     try {
-      const token = localStorage.getItem('token')
-      const response = await axios.get('/api/v1/data', {
-        headers: { Authorization: `Bearer ${token}` },
-      })
+      const response = await api.get(routes.dataPath())
       return response.data
     }
-    catch (e) {
-      return rejectWithValue(e.response?.data || e.message)
+    catch (error) {
+      return rejectWithValue(error.response?.data || error.message)
     }
   },
 )

@@ -1,25 +1,16 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
-import { getApiUrl } from '../services/apiUtils.js'
+import api from '../services/axiosConfig.js'
+import routes from '../routes.js'
 
 export const fetchChannels = createAsyncThunk(
   'channels/fetchChannels',
   async (_, { rejectWithValue }) => {
     try {
-      const token = localStorage.getItem('token')
-      if (!token) throw new Error('No token')
-
-      const response = await fetch(`${getApiUrl()}/channels`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      })
-
-      if (!response.ok) throw new Error('Failed to fetch channels')
-      const data = await response.json()
-      return Array.isArray(data) ? data : data.channels || []
+      const response = await api.get(routes.channelsPath())
+      return Array.isArray(response.data) ? response.data : []
     }
     catch (error) {
-      return rejectWithValue(error.message)
+      return rejectWithValue(error.response?.data || error.message)
     }
   },
 )
@@ -28,21 +19,11 @@ export const createChannel = createAsyncThunk(
   'channels/createChannel',
   async (channelData, { rejectWithValue }) => {
     try {
-      const token = localStorage.getItem('token')
-      const response = await fetch(`${getApiUrl()}/channels`, {
-        method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${token}`,
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(channelData),
-      })
-
-      if (!response.ok) throw new Error('Failed to create channel')
-      return await response.json()
+      const response = await api.post(routes.channelsPath(), channelData)
+      return response.data
     }
     catch (error) {
-      return rejectWithValue(error.message)
+      return rejectWithValue(error.response?.data || error.message)
     }
   },
 )
@@ -51,21 +32,11 @@ export const renameChannel = createAsyncThunk(
   'channels/renameChannel',
   async ({ id, name }, { rejectWithValue }) => {
     try {
-      const token = localStorage.getItem('token')
-      const response = await fetch(`${getApiUrl()}/channels/${id}`, {
-        method: 'PATCH',
-        headers: {
-          'Authorization': `Bearer ${token}`,
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ name }),
-      })
-
-      if (!response.ok) throw new Error('Failed to rename channel')
-      return await response.json()
+      const response = await api.patch(`${routes.channelsPath()}/${id}`, { name })
+      return response.data
     }
     catch (error) {
-      return rejectWithValue(error.message)
+      return rejectWithValue(error.response?.data || error.message)
     }
   },
 )
@@ -74,19 +45,11 @@ export const deleteChannel = createAsyncThunk(
   'channels/deleteChannel',
   async (channelId, { rejectWithValue }) => {
     try {
-      const token = localStorage.getItem('token')
-      const response = await fetch(`${getApiUrl()}/channels/${channelId}`, {
-        method: 'DELETE',
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      })
-
-      if (!response.ok) throw new Error('Failed to delete channel')
+      await api.delete(`${routes.channelsPath()}/${channelId}`)
       return { id: channelId }
     }
     catch (error) {
-      return rejectWithValue(error.message)
+      return rejectWithValue(error.response?.data || error.message)
     }
   },
 )

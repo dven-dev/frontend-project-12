@@ -14,6 +14,7 @@ import { useTranslation } from 'react-i18next'
 import axios from 'axios'
 import { useNavigate } from 'react-router-dom'
 import { useDispatch } from 'react-redux'
+import api from '../services/axiosConfig.js'
 import routes from '../routes.js'
 import avatarImg from '../assets/avatar_1.jpg'
 import { loginSuccess } from '../slices/authSlice.js'
@@ -51,7 +52,7 @@ const SignupPage = () => {
     setErrorMessage('')
     try {
       const { ...signupData } = values
-      const response = await axios.post(routes.signupPath(), signupData)
+      const response = await api.post(routes.signupPath(), signupData)
       const { token, username } = response.data
 
       localStorage.setItem('token', token)
@@ -114,7 +115,7 @@ const SignupPage = () => {
                     >
                       <Form.Control
                         name="username"
-                        autoComplete="username"
+                        autoComplete="off"
                         placeholder={t('username')}
                         value={values.username}
                         onChange={handleChange}
@@ -139,7 +140,7 @@ const SignupPage = () => {
                       <Form.Control
                         type="password"
                         name="password"
-                        autoComplete="new-password"
+                        autoComplete="off"
                         placeholder={t('password')}
                         value={values.password}
                         onChange={handleChange}
@@ -161,7 +162,7 @@ const SignupPage = () => {
                       <Form.Control
                         type="password"
                         name="confirmPassword"
-                        autoComplete="new-password"
+                        autoComplete="off"
                         placeholder={t('confirmPassword')}
                         value={values.confirmPassword}
                         onChange={handleChange}
