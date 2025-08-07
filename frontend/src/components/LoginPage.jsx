@@ -10,7 +10,6 @@ import {
 import { Formik } from 'formik'
 import * as Yup from 'yup'
 import { useTranslation } from 'react-i18next'
-import axios from 'axios'
 import { useNavigate, useLocation, Link } from 'react-router-dom'
 import { useDispatch } from 'react-redux'
 import api from '../services/axiosConfig.js'
